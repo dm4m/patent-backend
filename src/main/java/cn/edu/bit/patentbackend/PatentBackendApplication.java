@@ -10,5 +10,5 @@ public class PatentBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(PatentBackendApplication.class, args);
     }
-
+    
 }
