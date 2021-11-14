@@ -32,7 +32,7 @@ public class PatentServiceImpl implements PatentService{
         request.indices("patent");
         // 构建查询的请求体
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.query(QueryBuilders.termQuery("abstract", query));
+        sourceBuilder.query(QueryBuilders.multiMatchQuery(query, "abstract", "title", "signory_item"));
         sourceBuilder.from(from);
         sourceBuilder.size(size);
         request.source(sourceBuilder);
