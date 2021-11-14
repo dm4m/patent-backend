@@ -1,4 +1,5 @@
 package cn.edu.bit.patentbackend.controller;
+import cn.edu.bit.patentbackend.bean.SearchResponse;
 import cn.edu.bit.patentbackend.service.PatentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,12 @@ public class PatentController {
     PatentService patentService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Map<String, Object>> search(@RequestParam("query") String query) throws IOException {
-        ArrayList<Map<String, Object>> result = patentService.search(query);
-        return result;
+    public SearchResponse search(@RequestParam("query") String query,
+                                 @RequestParam("cur_page") Integer curPage,
+                                 @RequestParam("per_page") Integer perPage
+                                            ) throws IOException {
+        SearchResponse response = new SearchResponse();
+        response = patentService.search(query, curPage, perPage);
+        return response;
     }
 }

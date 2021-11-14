@@ -1,10 +1,10 @@
 package cn.edu.bit.patentbackend.service;
 
+import cn.edu.bit.patentbackend.bean.SearchResponse;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
 
 
 public interface PatentService {
-    public ArrayList<Map<String, Object>> search(String query) throws IOException;
+    public SearchResponse search(String query, Integer page, Integer perPage) throws IOException;
 }
