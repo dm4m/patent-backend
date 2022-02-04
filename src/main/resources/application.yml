@@ -1,0 +1,3 @@
+elasticsearch:
+  ip: 10.1.0.177
+  port: 9200
