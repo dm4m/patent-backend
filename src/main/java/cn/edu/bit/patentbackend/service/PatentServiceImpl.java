@@ -21,7 +21,7 @@ public class PatentServiceImpl implements PatentService{
     PatentRepository patentRepository;
 
     @Override
-    public SearchResponse search(String query, Integer curPage, Integer perPage) throws IOException {
+    public SearchResponse search(String query, Integer curPage, Integer perPage, String field) throws IOException {
         curPage = curPage >= 0 ? curPage : 0;
         perPage = perPage > 0 ? perPage : 20;
         int from = curPage * perPage;
@@ -32,7 +32,7 @@ public class PatentServiceImpl implements PatentService{
         request.indices("patent");
         // 构建查询的请求体
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.query(QueryBuilders.multiMatchQuery(query, "abstract", "title", "signory_item"));
+        sourceBuilder.query(QueryBuilders.multiMatchQuery(query, field));
         sourceBuilder.from(from);
         sourceBuilder.size(size);
         request.source(sourceBuilder);

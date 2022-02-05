@@ -18,10 +18,12 @@ public class PatentController {
     @RequestMapping(method = RequestMethod.GET)
     public SearchResponse search(@RequestParam("query") String query,
                                  @RequestParam("cur_page") Integer curPage,
-                                 @RequestParam("per_page") Integer perPage
+                                 @RequestParam("per_page") Integer perPage,
+                                 @RequestParam("field") String field
                                             ) throws IOException {
         SearchResponse response = new SearchResponse();
-        response = patentService.search(query, curPage, perPage);
+        // field字段名称应与ES后端字段名称保持一致
+        response = patentService.search(query, curPage, perPage, field);
         return response;
     }
 }
