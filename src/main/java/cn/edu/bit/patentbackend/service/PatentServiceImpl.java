@@ -32,6 +32,25 @@ public class PatentServiceImpl implements PatentService{
         request.indices("patent");
         // 构建查询的请求体
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        if(field.equals("title")){
+            sourceBuilder.query(QueryBuilders.matchQuery(query, "title"));
+        }else if(field.equals("abstract")){
+            sourceBuilder.query(QueryBuilders.matchQuery(query, "abstract"));
+        }else if(field.equals("signory_item")){
+            sourceBuilder.query(QueryBuilders.matchQuery(query, "signory_item"));
+        }else if(field.equals("patentCode")){
+            sourceBuilder.query(QueryBuilders.termQuery(query, "patentCode"));
+        }else if(field.equals("publicationNo")){
+            sourceBuilder.query(QueryBuilders.termQuery("publicationNo", query));
+        }else if(field.equals("applicant")){
+            sourceBuilder.query(QueryBuilders.termQuery(query, "applicant"));
+        }else if(field.equals("inventor")){
+            sourceBuilder.query(QueryBuilders.termQuery(query, "inventor"));
+        }else if(field.equals("main_class")){
+            sourceBuilder.query(QueryBuilders.termQuery(query, "main_class_list"));
+        }else if(field.equals("class")){
+            sourceBuilder.query(QueryBuilders.termQuery(query, "class_list"));
+        }
         sourceBuilder.query(QueryBuilders.multiMatchQuery(query, field));
         sourceBuilder.from(from);
         sourceBuilder.size(size);
