@@ -23,7 +23,7 @@ public class PatentController {
                                             ) throws IOException {
         SearchResponse response = new SearchResponse();
         // field字段名称应与ES后端字段名称保持一致
-        response = patentService.search(query, curPage, perPage, field);
+        response = patentService.search(query, field, curPage, perPage);
         return response;
     }
 }

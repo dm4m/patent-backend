@@ -16,5 +16,6 @@ public class SearchResponse {
     Integer pageNum;
     Integer perPage;
     String query;
+    String field;
     List<Map<String, Object>> results;
 }

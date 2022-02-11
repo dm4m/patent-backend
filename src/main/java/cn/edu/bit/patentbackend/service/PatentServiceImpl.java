@@ -21,7 +21,7 @@ public class PatentServiceImpl implements PatentService{
     PatentRepository patentRepository;
 
     @Override
-    public SearchResponse search(String query, Integer curPage, Integer perPage, String field) throws IOException {
+    public SearchResponse search(String query, String field, Integer curPage, Integer perPage) throws IOException {
         curPage = curPage >= 0 ? curPage : 0;
         perPage = perPage > 0 ? perPage : 20;
         int from = curPage * perPage;
@@ -33,25 +33,25 @@ public class PatentServiceImpl implements PatentService{
         // 构建查询的请求体
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         if(field.equals("title")){
-            sourceBuilder.query(QueryBuilders.matchQuery(query, "title"));
+            sourceBuilder.query(QueryBuilders.matchQuery("title", query));
         }else if(field.equals("abstract")){
-            sourceBuilder.query(QueryBuilders.matchQuery(query, "abstract"));
+            sourceBuilder.query(QueryBuilders.matchQuery("abstract", query));
         }else if(field.equals("signory_item")){
-            sourceBuilder.query(QueryBuilders.matchQuery(query, "signory_item"));
+            sourceBuilder.query(QueryBuilders.matchQuery("signory_item", query));
         }else if(field.equals("patentCode")){
-            sourceBuilder.query(QueryBuilders.termQuery(query, "patentCode"));
+            sourceBuilder.query(QueryBuilders.termQuery("patent_code.keyword", query));
         }else if(field.equals("publicationNo")){
-            sourceBuilder.query(QueryBuilders.termQuery("publicationNo", query));
+            sourceBuilder.query(QueryBuilders.termQuery("publication_no.keyword", query));
         }else if(field.equals("applicant")){
-            sourceBuilder.query(QueryBuilders.termQuery(query, "applicant"));
+            sourceBuilder.query(QueryBuilders.wildcardQuery("applicant_list.keyword", "*" + query + "*"));
         }else if(field.equals("inventor")){
-            sourceBuilder.query(QueryBuilders.termQuery(query, "inventor"));
+            sourceBuilder.query(QueryBuilders.wildcardQuery("inventor_list.keyword", "*" + query + "*"));
         }else if(field.equals("main_class")){
-            sourceBuilder.query(QueryBuilders.termQuery(query, "main_class_list"));
+            sourceBuilder.query(QueryBuilders.wildcardQuery("main_class_list.keyword", "*" + query + "*"));
         }else if(field.equals("class")){
-            sourceBuilder.query(QueryBuilders.termQuery(query, "class_list"));
+            sourceBuilder.query(QueryBuilders.wildcardQuery("class_list.keyword", "*" + query + "*"));
         }
-        sourceBuilder.query(QueryBuilders.multiMatchQuery(query, field));
+//        sourceBuilder.query(QueryBuilders.multiMatchQuery(query, field));
         sourceBuilder.from(from);
         sourceBuilder.size(size);
         request.source(sourceBuilder);
@@ -73,7 +73,7 @@ public class PatentServiceImpl implements PatentService{
         System.out.println("收到请求");
         long totalHits = hits.getTotalHits().value;
         int pageNum = (int)totalHits / perPage;
-        SearchResponse response = new SearchResponse(curPage, totalHits, pageNum, perPage,query, results);
+        SearchResponse response = new SearchResponse(curPage, totalHits, pageNum, perPage, query, field, results);
         return response;
     }
 }

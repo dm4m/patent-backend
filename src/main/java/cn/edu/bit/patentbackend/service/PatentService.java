@@ -6,5 +6,5 @@ import java.io.IOException;
 
 
 public interface PatentService {
-    public SearchResponse search(String query, Integer page, Integer perPage, String field) throws IOException;
+    public SearchResponse search(String query, String field, Integer page, Integer perPage) throws IOException;
 }
