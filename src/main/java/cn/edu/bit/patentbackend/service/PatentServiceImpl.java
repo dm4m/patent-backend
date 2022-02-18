@@ -1,17 +1,24 @@
 package cn.edu.bit.patentbackend.service;
 
-import cn.edu.bit.patentbackend.bean.SearchResponse;
+import cn.edu.bit.patentbackend.bean.basicSearchResponse;
 import cn.edu.bit.patentbackend.repository.PatentRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -20,8 +27,11 @@ public class PatentServiceImpl implements PatentService{
     @Autowired
     PatentRepository patentRepository;
 
+    @Value("${flask.url}")
+    String flaskUrl;
+
     @Override
-    public SearchResponse search(String query, String field, Integer curPage, Integer perPage) throws IOException {
+    public basicSearchResponse basicSearch(String query, String field, Integer curPage, Integer perPage) throws IOException {
         curPage = curPage >= 0 ? curPage : 0;
         perPage = perPage > 0 ? perPage : 20;
         int from = curPage * perPage;
@@ -55,7 +65,7 @@ public class PatentServiceImpl implements PatentService{
         sourceBuilder.from(from);
         sourceBuilder.size(size);
         request.source(sourceBuilder);
-        SearchHits hits = patentRepository.search(request);
+        SearchHits hits = patentRepository.basicSearch(request);
         System.out.println("total:" + hits.getTotalHits());
         System.out.println("MaxScore:" + hits.getMaxScore());
         System.out.println("hits========>>");
@@ -73,7 +83,34 @@ public class PatentServiceImpl implements PatentService{
         System.out.println("收到请求");
         long totalHits = hits.getTotalHits().value;
         int pageNum = (int)totalHits / perPage;
-        SearchResponse response = new SearchResponse(curPage, totalHits, pageNum, perPage, query, field, results);
+        basicSearchResponse response = new basicSearchResponse(curPage, totalHits, pageNum, perPage, query, field, results);
         return response;
     }
+
+    @Override
+    public basicSearchResponse neuralSearch(String query, Integer curPage, Integer perPage) throws JsonProcessingException {
+        ArrayList<Map<String, Object>> results = new ArrayList<>();
+        //通过query获取id list
+        WebClient webClient = WebClient.create(flaskUrl);
+        Mono<String> mono = webClient.get()
+                .uri("/?query={query}", query)
+                .retrieve()
+                .bodyToMono(String.class);
+        String httpResponse = mono.block();
+        ObjectMapper mapper = new ObjectMapper();
+        List<Integer> list = mapper.readValue(httpResponse, ArrayList.class);
+//        List<Integer> list = Arrays.asList(1, 2);
+        List<Map<String, Object>> patentList = patentRepository.getPatentById(list);
+        int i = 0;
+        for (Map patent : patentList) {
+            //生成序号
+            patent.put("index", curPage * perPage + (++i));
+            results.add(patent);
+        }
+        int totalHits = patentList.size();
+        int pageNum = totalHits / perPage;
+        basicSearchResponse response = new basicSearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", results);
+        return response;
+    }
+
 }

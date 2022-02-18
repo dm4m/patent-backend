@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchResponse {
+public class basicSearchResponse {
     Integer curPage;
     Long totalHits;
     Integer pageNum;

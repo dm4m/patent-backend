@@ -1,3 +1,20 @@
+spring:
+  #数据库连接配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://152.136.114.189:6336/patent?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=GMT
+    username: bwj
+    password: bwj
+
+#mybatis的相关配置
+mybatis:
+  #开启驼峰命名
+  configuration:
+    map-underscore-to-camel-case: true
+
 elasticsearch:
   ip: localhost
   port: 9200
+
+flask:
+  url: http://152.136.114.189:13000

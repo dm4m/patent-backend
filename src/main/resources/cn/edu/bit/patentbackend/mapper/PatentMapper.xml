@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.bit.patentbackend.mapper.PatentMapper">
+  <resultMap id="BaseResultMap" type="cn.edu.bit.patentbackend.bean.Patent">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="patent_type" jdbcType="VARCHAR" property="patentType" />
+    <result column="publication_no" jdbcType="VARCHAR" property="publicationNo" />
+    <result column="publication_date" jdbcType="VARCHAR" property="publicationDate" />
+    <result column="patent_code" jdbcType="VARCHAR" property="patentCode" />
+    <result column="application_date" jdbcType="VARCHAR" property="applicationDate" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="applicant_address" jdbcType="VARCHAR" property="applicantAddress" />
+    <result column="agency" jdbcType="VARCHAR" property="agency" />
+    <result column="agent" jdbcType="VARCHAR" property="agent" />
+    <result column="page_num" jdbcType="VARCHAR" property="pageNum" />
+    <result column="applicant_area" jdbcType="VARCHAR" property="applicantArea" />
+    <result column="display_mainclass_code" jdbcType="VARCHAR" property="displayMainclassCode" />
+    <result column="pdf" jdbcType="VARCHAR" property="pdf" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.edu.bit.patentbackend.bean.PatentWithBLOBs">
+    <result column="main_class_list" jdbcType="LONGVARCHAR" property="mainClassList" />
+    <result column="class_list" jdbcType="LONGVARCHAR" property="classList" />
+    <result column="applicant_list" jdbcType="LONGVARCHAR" property="applicantList" />
+    <result column="inventor_list" jdbcType="LONGVARCHAR" property="inventorList" />
+    <result column="abstract" jdbcType="LONGVARCHAR" property="abstract_" />
+    <result column="signory_item" jdbcType="LONGVARCHAR" property="signoryItem" />
+    <result column="display_class_list" jdbcType="LONGVARCHAR" property="displayClassList" />
+    <result column="F_LawStatus" jdbcType="LONGVARCHAR" property="fLawstatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, patent_type, publication_no, publication_date, patent_code, application_date, 
+    title, applicant_address, agency, agent, page_num, applicant_area, display_mainclass_code, 
+    pdf
+  </sql>
+  <sql id="Blob_Column_List">
+    main_class_list, class_list, applicant_list, inventor_list, abstract, signory_item, 
+    display_class_list, F_LawStatus
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from patent
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectPatentListByIds"  resultType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from patent
+    where id in
+    <foreach collection="Ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </select>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.bit.patentbackend.bean.PatentWithBLOBs">
+    update patent
+    <set>
+      <if test="patentType != null">
+        patent_type = #{patentType,jdbcType=VARCHAR},
+      </if>
+      <if test="publicationNo != null">
+        publication_no = #{publicationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="publicationDate != null">
+        publication_date = #{publicationDate,jdbcType=VARCHAR},
+      </if>
+      <if test="patentCode != null">
+        patent_code = #{patentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applicationDate != null">
+        application_date = #{applicationDate,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="applicantAddress != null">
+        applicant_address = #{applicantAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="agency != null">
+        agency = #{agency,jdbcType=VARCHAR},
+      </if>
+      <if test="agent != null">
+        agent = #{agent,jdbcType=VARCHAR},
+      </if>
+      <if test="pageNum != null">
+        page_num = #{pageNum,jdbcType=VARCHAR},
+      </if>
+      <if test="applicantArea != null">
+        applicant_area = #{applicantArea,jdbcType=VARCHAR},
+      </if>
+      <if test="displayMainclassCode != null">
+        display_mainclass_code = #{displayMainclassCode,jdbcType=VARCHAR},
+      </if>
+      <if test="数据库标识 != null">
+        数据库标识 = #{数据库标识,jdbcType=VARCHAR},
+      </if>
+      <if test="入库批次 != null">
+        入库批次 = #{入库批次,jdbcType=VARCHAR},
+      </if>
+      <if test="申请号wjy != null">
+        申请号wjy = #{申请号wjy,jdbcType=VARCHAR},
+      </if>
+      <if test="主分类号显示数 != null">
+        主分类号显示数 = #{主分类号显示数,jdbcType=INTEGER},
+      </if>
+      <if test="分类号显示数 != null">
+        分类号显示数 = #{分类号显示数,jdbcType=INTEGER},
+      </if>
+      <if test="pdf != null">
+        pdf = #{pdf,jdbcType=VARCHAR},
+      </if>
+      <if test="mainClassList != null">
+        main_class_list = #{mainClassList,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="classList != null">
+        class_list = #{classList,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="applicantList != null">
+        applicant_list = #{applicantList,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="inventorList != null">
+        inventor_list = #{inventorList,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="abstract != null">
+        abstract = #{abstract,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="signoryItem != null">
+        signory_item = #{signoryItem,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="displayClassList != null">
+        display_class_list = #{displayClassList,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="fLawstatus != null">
+        F_LawStatus = #{fLawstatus,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.edu.bit.patentbackend.bean.PatentWithBLOBs">
+    update patent
+    set patent_type = #{patentType,jdbcType=VARCHAR},
+      publication_no = #{publicationNo,jdbcType=VARCHAR},
+      publication_date = #{publicationDate,jdbcType=VARCHAR},
+      patent_code = #{patentCode,jdbcType=VARCHAR},
+      application_date = #{applicationDate,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      applicant_address = #{applicantAddress,jdbcType=VARCHAR},
+      agency = #{agency,jdbcType=VARCHAR},
+      agent = #{agent,jdbcType=VARCHAR},
+      page_num = #{pageNum,jdbcType=VARCHAR},
+      applicant_area = #{applicantArea,jdbcType=VARCHAR},
+      display_mainclass_code = #{displayMainclassCode,jdbcType=VARCHAR},
+      数据库标识 = #{数据库标识,jdbcType=VARCHAR},
+      入库批次 = #{入库批次,jdbcType=VARCHAR},
+      申请号wjy = #{申请号wjy,jdbcType=VARCHAR},
+      主分类号显示数 = #{主分类号显示数,jdbcType=INTEGER},
+      分类号显示数 = #{分类号显示数,jdbcType=INTEGER},
+      pdf = #{pdf,jdbcType=VARCHAR},
+      main_class_list = #{mainClassList,jdbcType=LONGVARCHAR},
+      class_list = #{classList,jdbcType=LONGVARCHAR},
+      applicant_list = #{applicantList,jdbcType=LONGVARCHAR},
+      inventor_list = #{inventorList,jdbcType=LONGVARCHAR},
+      abstract = #{abstract,jdbcType=LONGVARCHAR},
+      signory_item = #{signoryItem,jdbcType=LONGVARCHAR},
+      display_class_list = #{displayClassList,jdbcType=LONGVARCHAR},
+      F_LawStatus = #{fLawstatus,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.bit.patentbackend.bean.Patent">
+    update patent
+    set patent_type = #{patentType,jdbcType=VARCHAR},
+      publication_no = #{publicationNo,jdbcType=VARCHAR},
+      publication_date = #{publicationDate,jdbcType=VARCHAR},
+      patent_code = #{patentCode,jdbcType=VARCHAR},
+      application_date = #{applicationDate,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      applicant_address = #{applicantAddress,jdbcType=VARCHAR},
+      agency = #{agency,jdbcType=VARCHAR},
+      agent = #{agent,jdbcType=VARCHAR},
+      page_num = #{pageNum,jdbcType=VARCHAR},
+      applicant_area = #{applicantArea,jdbcType=VARCHAR},
+      display_mainclass_code = #{displayMainclassCode,jdbcType=VARCHAR},
+      数据库标识 = #{数据库标识,jdbcType=VARCHAR},
+      入库批次 = #{入库批次,jdbcType=VARCHAR},
+      申请号wjy = #{申请号wjy,jdbcType=VARCHAR},
+      主分类号显示数 = #{主分类号显示数,jdbcType=INTEGER},
+      分类号显示数 = #{分类号显示数,jdbcType=INTEGER},
+      pdf = #{pdf,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

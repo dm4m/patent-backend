@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### mybatis 逆向工程文件###
+generatorConfig.xml
+Generator.java
