@@ -13,7 +13,7 @@ mybatis:
     map-underscore-to-camel-case: true
 
 elasticsearch:
-  ip: localhost
+  ip: 10.1.0.177
   port: 9200
 
 flask:

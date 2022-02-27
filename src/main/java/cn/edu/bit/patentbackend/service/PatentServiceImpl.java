@@ -83,7 +83,7 @@ public class PatentServiceImpl implements PatentService{
         System.out.println("收到请求");
         long totalHits = hits.getTotalHits().value;
         int pageNum = (int)totalHits / perPage;
-        basicSearchResponse response = new basicSearchResponse(curPage, totalHits, pageNum, perPage, query, field, results);
+        basicSearchResponse response = new basicSearchResponse(curPage, totalHits, pageNum, perPage, query, field,"basic", results);
         return response;
     }
 
@@ -109,7 +109,7 @@ public class PatentServiceImpl implements PatentService{
         }
         int totalHits = patentList.size();
         int pageNum = totalHits / perPage;
-        basicSearchResponse response = new basicSearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", results);
+        basicSearchResponse response = new basicSearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", "neural",results);
         return response;
     }
 
