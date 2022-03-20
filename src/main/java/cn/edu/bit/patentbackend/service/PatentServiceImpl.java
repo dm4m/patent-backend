@@ -16,10 +16,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class PatentServiceImpl implements PatentService{
@@ -65,7 +68,14 @@ public class PatentServiceImpl implements PatentService{
         sourceBuilder.from(from);
         sourceBuilder.size(size);
         request.source(sourceBuilder);
-        SearchHits hits = patentRepository.basicSearch(request);
+        SearchHits hits = null;
+        try {
+            hits = patentRepository.basicSearch(request);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
         System.out.println("total:" + hits.getTotalHits());
         System.out.println("MaxScore:" + hits.getMaxScore());
         System.out.println("hits========>>");
@@ -112,5 +122,4 @@ public class PatentServiceImpl implements PatentService{
         basicSearchResponse response = new basicSearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", "neural",results);
         return response;
     }
-
 }

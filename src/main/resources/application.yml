@@ -13,8 +13,12 @@ mybatis:
     map-underscore-to-camel-case: true
 
 elasticsearch:
-  ip: 10.1.0.177
-  port: 9200
+  address: 10.1.0.177:9200
+  username: elastic
+  password: elastic
+  key-store-pass: 6MkOuto0Q7-VqYldF_pTzw
+  trust-store-class-path: security/http.p12
+  http-scheme: https
 
 flask:
   url: http://152.136.114.189:13000
