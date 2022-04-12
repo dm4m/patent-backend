@@ -1,6 +1,6 @@
 package cn.edu.bit.patentbackend.service;
 
-import cn.edu.bit.patentbackend.bean.basicSearchResponse;
+import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
 import cn.edu.bit.patentbackend.repository.PatentRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,10 +19,8 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class PatentServiceImpl implements PatentService{
@@ -34,7 +32,7 @@ public class PatentServiceImpl implements PatentService{
     String flaskUrl;
 
     @Override
-    public basicSearchResponse basicSearch(String query, String field, Integer curPage, Integer perPage) throws IOException {
+    public BasicSearchResponse basicSearch(String query, String field, Integer curPage, Integer perPage) throws IOException {
         curPage = curPage >= 0 ? curPage : 0;
         perPage = perPage > 0 ? perPage : 20;
         int from = curPage * perPage;
@@ -93,12 +91,12 @@ public class PatentServiceImpl implements PatentService{
         System.out.println("收到请求");
         long totalHits = hits.getTotalHits().value;
         int pageNum = (int)totalHits / perPage;
-        basicSearchResponse response = new basicSearchResponse(curPage, totalHits, pageNum, perPage, query, field,"basic", results);
+        BasicSearchResponse response = new BasicSearchResponse(curPage, totalHits, pageNum, perPage, query, field,"basic", results);
         return response;
     }
 
     @Override
-    public basicSearchResponse neuralSearch(String query, Integer curPage, Integer perPage) throws JsonProcessingException {
+    public BasicSearchResponse neuralSearch(String query, Integer curPage, Integer perPage) throws JsonProcessingException {
         ArrayList<Map<String, Object>> results = new ArrayList<>();
         //通过query获取id list
         WebClient webClient = WebClient.create(flaskUrl);
@@ -119,7 +117,7 @@ public class PatentServiceImpl implements PatentService{
         }
         int totalHits = patentList.size();
         int pageNum = totalHits / perPage;
-        basicSearchResponse response = new basicSearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", "neural",results);
+        BasicSearchResponse response = new BasicSearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", "neural",results);
         return response;
     }
 }

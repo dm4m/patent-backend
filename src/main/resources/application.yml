@@ -2,7 +2,7 @@ spring:
   #数据库连接配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://152.136.114.189:6336/patent?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=GMT
+    url: jdbc:mysql://10.1.0.177:3306/patent?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=GMT
     username: bwj
     password: bwj
 
@@ -21,4 +21,4 @@ elasticsearch:
   http-scheme: https
 
 flask:
-  url: http://152.136.114.189:13000
+  url: http://10.1.0.177:5000

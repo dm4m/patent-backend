@@ -1,8 +1,16 @@
 package cn.edu.bit.patentbackend;
 
+import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -10,6 +18,7 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +28,9 @@ class PatentBackendApplicationTests {
 
     @Value("${flask.url}")
     String flaskUrl;
+
+    @Autowired
+    private RestHighLevelClient restHighLevelClient;
 
     @Test
     void contextLoads() throws JsonProcessingException {
@@ -45,6 +57,26 @@ class PatentBackendApplicationTests {
 //        System.out.println("headers：" + headers.asHttpHeaders());
 //        System.out.println("body：" + body);
 //        System.out.println("ddd");
+    }
+
+    @Test
+    void testESJavaApi() throws IOException {
+        // Create the new Java Client with the same low level client
+        ElasticsearchTransport transport = new RestClientTransport(
+                restHighLevelClient.getLowLevelClient(),
+                new JacksonJsonpMapper()
+        );
+        // And create the API client
+        ElasticsearchClient client = new ElasticsearchClient(transport);
+        SearchResponse<Object> search = client.search(s -> s
+                        .index("patent")
+                        .query(q -> q
+                                .term(t -> t
+                                        .field("agency")
+                                        .value(v -> v.stringValue("湖南省专利服务中心"))))
+                , Object.class);
+
+        System.out.println(" ");
     }
 
 }

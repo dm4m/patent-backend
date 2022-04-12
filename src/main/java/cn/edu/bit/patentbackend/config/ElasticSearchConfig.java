@@ -47,8 +47,6 @@ public class ElasticSearchConfig {
     public RestClientBuilder restClientBuilder() throws NoSuchAlgorithmException, KeyManagementException {
         Assert.notNull(elasticSearchProperty, "elasticSearchProperty cannot null ");
         Assert.notNull(elasticSearchProperty.getAddress(), "address hosts cannot null ");
-
-
         //ElasticSearch 连接地址地址
         HttpHost[] httpHosts = this.getElasticSearchHttpHosts();
 
