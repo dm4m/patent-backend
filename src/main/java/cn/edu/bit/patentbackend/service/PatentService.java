@@ -9,5 +9,5 @@ import java.io.IOException;
 public interface PatentService {
     public BasicSearchResponse basicSearch(String query, String field, Integer page, Integer perPage) throws IOException;
 
-    BasicSearchResponse neuralSearch(String query, Integer curPage, Integer perPage) throws JsonProcessingException;
+    BasicSearchResponse neuralSearch(String query, String field, Integer curPage, Integer perPage) throws JsonProcessingException;
 }

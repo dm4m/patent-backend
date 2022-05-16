@@ -96,18 +96,21 @@ public class PatentServiceImpl implements PatentService{
     }
 
     @Override
-    public BasicSearchResponse neuralSearch(String query, Integer curPage, Integer perPage) throws JsonProcessingException {
+    public BasicSearchResponse neuralSearch(String query, String field, Integer curPage, Integer perPage) throws JsonProcessingException {
         ArrayList<Map<String, Object>> results = new ArrayList<>();
         //通过query获取id list
         WebClient webClient = WebClient.create(flaskUrl);
         Mono<String> mono = webClient.get()
-                .uri("/?query={query}", query)
+                .uri("/?query={query}&field={field}", query, field)
                 .retrieve()
                 .bodyToMono(String.class);
         String httpResponse = mono.block();
         ObjectMapper mapper = new ObjectMapper();
         List<Integer> list = mapper.readValue(httpResponse, ArrayList.class);
 //        List<Integer> list = Arrays.asList(1, 2);
+        if(field.equals("signory_item")){
+
+        }
         List<Map<String, Object>> patentList = patentRepository.getPatentById(list);
         int i = 0;
         for (Map patent : patentList) {

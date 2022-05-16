@@ -26,9 +26,10 @@ public class PatentController {
 
     @RequestMapping(path = "/neuralSearch", method = RequestMethod.GET)
     public BasicSearchResponse neuralSearch(@RequestParam("query") String query,
+                                            @RequestParam("field") String field,
                                             @RequestParam("cur_page") Integer curPage,
                                             @RequestParam("per_page") Integer perPage) throws JsonProcessingException {
-        BasicSearchResponse response = patentService.neuralSearch(query, curPage, perPage);
+        BasicSearchResponse response = patentService.neuralSearch(query, field, curPage, perPage);
         return response;
     }
 

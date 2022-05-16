@@ -79,4 +79,9 @@ class PatentBackendApplicationTests {
         System.out.println(" ");
     }
 
+    @Test
+    void testSignoryNeuralSearch(){
+
+    }
+
 }
