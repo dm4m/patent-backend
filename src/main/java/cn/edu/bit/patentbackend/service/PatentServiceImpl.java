@@ -108,9 +108,6 @@ public class PatentServiceImpl implements PatentService{
         ObjectMapper mapper = new ObjectMapper();
         List<Integer> list = mapper.readValue(httpResponse, ArrayList.class);
 //        List<Integer> list = Arrays.asList(1, 2);
-        if(field.equals("signory_item")){
-
-        }
         List<Map<String, Object>> patentList = patentRepository.getPatentById(list);
         int i = 0;
         for (Map patent : patentList) {
