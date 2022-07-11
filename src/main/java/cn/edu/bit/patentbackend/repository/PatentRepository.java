@@ -72,4 +72,6 @@ public class PatentRepository {
         return patents;
     }
 
+//    public SearchHits advancedSearch(SearchRequest request) {
+//    }
 }

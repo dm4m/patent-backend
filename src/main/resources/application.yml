@@ -2,7 +2,7 @@ spring:
   #数据库连接配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.1.0.177:3306/patent?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=GMT
+    url: jdbc:mysql://152.136.114.189:6336/patent?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=GMT
     username: bwj
     password: bwj
 
@@ -12,13 +12,23 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
+#实验室电脑配置
+#elasticsearch:
+#  address: 10.1.0.177:9200
+#  username: elastic
+#  password: elastic
+#  key-store-pass: 6MkOuto0Q7-VqYldF_pTzw
+#  trust-store-class-path: security/http.p12
+#  http-scheme: https
+
+#笔记本
 elasticsearch:
-  address: 10.1.0.177:9200
+  address: 127.0.0.1:9200
   username: elastic
-  password: elastic
-  key-store-pass: 6MkOuto0Q7-VqYldF_pTzw
+  password: YiPmz+_sDW_pfk9N-og0
+  key-store-pass: 3nKSgtVyQjGH2jqf5DS99A
   trust-store-class-path: security/http.p12
   http-scheme: https
 
 flask:
-  url: http://10.1.0.177:5000
+  url: http://152.136.114.189:5000
