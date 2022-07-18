@@ -1,12 +1,12 @@
 package cn.edu.bit.patentbackend.service;
 
+import cn.edu.bit.patentbackend.bean.AdvancedSearchCondition;
 import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
 import cn.edu.bit.patentbackend.repository.PatentRepository;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -123,62 +123,57 @@ public class PatentServiceImpl implements PatentService{
     }
 
     @Override
-    public BasicSearchResponse proSearch(String expression) {
-        QueryBuilder queryBuilder = ExpressionUtil.expression2query(expression);
-        ;
-        return null;
+    public BasicSearchResponse proSearch(String expression, Integer curPage, Integer perPage) {
+        curPage = curPage >= 0 ? curPage : 0;
+        perPage = perPage > 0 ? perPage : 20;
+        int from = curPage * perPage;
+        int size = (perPage);
+        ArrayList<Map<String, Object>> results = new ArrayList<>();
+        QueryBuilder queryBuilder = ExpressionUtil.expression2Query(expression);
+
+        System.out.println(queryBuilder);
+
+        SearchRequest searchRequest = new SearchRequest();
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(queryBuilder);
+        searchSourceBuilder.from(from);
+        searchSourceBuilder.size(size);
+        searchRequest.source(searchSourceBuilder);
+        SearchHits hits = null;
+        try {
+            hits = patentRepository.basicSearch(searchRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
+        }
+        int i = 0;
+        for (SearchHit hit : hits) {
+            //输出每条查询的结果信息
+            String sourceAsString = hit.getSourceAsString();
+            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+            //生成序号
+            sourceAsMap.put("index", curPage * perPage + (++i));
+            results.add(sourceAsMap);
+            System.out.println(hit.getSourceAsString());
+        }
+        System.out.println("<<========");
+        System.out.println("收到请求");
+        long totalHits = hits.getTotalHits().value;
+        int pageNum = (int)totalHits / perPage;
+        BasicSearchResponse response = new BasicSearchResponse(curPage, totalHits, pageNum, perPage, expression, "","pro", results);
+        return response;
     }
 
-//    @Override
-//    public BasicSearchResponse advancedSearch(LinkedHashMap conditions, int curPage, int perPage) {
-//        curPage = curPage >= 0 ? curPage : 0;
-//        perPage = perPage > 0 ? perPage : 20;
-//        int from = curPage * perPage;
-//        int size = (perPage);
-//        // 创建搜索请求对象
-//        SearchRequest request = new SearchRequest();
-//        request.indices("patent");
-//        // 构建查询的请求体
-//        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-////      sourceBuilder.query(QueryBuilders.multiMatchQuery(query, field));
-//        //遍历查询条件，构造 Query
-//        Iterator iter = conditions.entrySet().iterator();
-//        while (iter.hasNext()) {
-//            Map.Entry entry = (Map.Entry) iter.next();
-//            Object key = entry.getKey();
-//            LinkedHashMap condition = (LinkedHashMap) entry.getValue();
-//            String fieldOption = (String) condition.get("currentFieldOption");
-//            String logicOption = (String) condition.get("currentLogicOption");
-//            String matchOption = (String) condition.get("currentMatchOption");
-//            String queryText = (String) condition.get("text");
-//            if(logicOption.equals("and")){
-//
-//            }else if(logicOption.equals("or")){
-//
-//            } else if (logicOption.equals("not")) {
-//
-//            }
-//        }
-//        SearchHits hits = null;
-//        hits = patentRepository.advancedSearch(request);
-//        System.out.println("total:" + hits.getTotalHits());
-//        System.out.println("MaxScore:" + hits.getMaxScore());
-//        System.out.println("hits========>>");
-//        int i = 0;
-//        for (SearchHit hit : hits) {
-//            //输出每条查询的结果信息
-//            String sourceAsString = hit.getSourceAsString();
-//            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-//            //生成序号
-//            sourceAsMap.put("index", curPage * perPage + (++i));
-//            results.add(sourceAsMap);
-//            System.out.println(hit.getSourceAsString());
-//        }
-//        System.out.println("<<========");
-//        System.out.println("收到请求");
-//        long totalHits = hits.getTotalHits().value;
-//        int pageNum = (int)totalHits / perPage;
-//        BasicSearchResponse response = new BasicSearchResponse(curPage, totalHits, pageNum, perPage, query, field,"basic", results);
-//        return response;
-//    }
+    @Override
+    public BasicSearchResponse advancedSearch(LinkedHashMap conditionMap, int curPage, int perPage) {
+        ArrayList<AdvancedSearchCondition> conditions = new ArrayList<>(conditionMap.values());
+        QueryBuilder queryBuilder = ExpressionUtil.condition2Query(conditions);
+        BasicSearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
+        return response;
+    }
+
+
 }

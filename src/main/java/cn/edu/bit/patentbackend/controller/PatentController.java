@@ -1,4 +1,5 @@
 package cn.edu.bit.patentbackend.controller;
+import cn.edu.bit.patentbackend.bean.AdvancedSearchRequset;
 import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
 import cn.edu.bit.patentbackend.service.PatentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,21 +38,22 @@ public class PatentController {
         return response;
     }
 
-//    @RequestMapping(path = "/advancedSearch", method = RequestMethod.POST)
-//    public BasicSearchResponse advancedSearch(@RequestBody Map request) throws JsonProcessingException {
-//        System.out.println(request.toString());
-//        LinkedHashMap conditions = (LinkedHashMap) request.get("conditions");
-//        int perPage = (int) request.get("per_page");
-//        int curPage = (int) request.get("cur_page");
-//        Iterator iter = conditions.entrySet().iterator();
-//        BasicSearchResponse response = patentService.advancedSearch(conditions, curPage, perPage);
-//        return response;
-//    }
+    @RequestMapping(path = "/advancedSearch", method = RequestMethod.POST)
+    public BasicSearchResponse advancedSearch(@RequestBody AdvancedSearchRequset request) throws JsonProcessingException {
+        System.out.println(request.toString());
+        LinkedHashMap conditionMap = (LinkedHashMap) request.getConditionMap();
+        int perPage = (int) request.getPerPage();
+        int curPage = (int) request.getCurPage();
+        BasicSearchResponse response = patentService.advancedSearch(conditionMap, curPage, perPage);
+        return response;
+    }
 
-    @RequestMapping(path = "/proSearch", method = RequestMethod.POST)
-    public BasicSearchResponse proSearch(@RequestParam("expression") String expression) throws JsonProcessingException {
-        BasicSearchResponse response = patentService.proSearch(expression);
-        return null;
+    @RequestMapping(path = "/proSearch", method = RequestMethod.GET)
+    public BasicSearchResponse proSearch(@RequestParam("expression") String expression,
+                                         @RequestParam("cur_page") Integer curPage,
+                                         @RequestParam("per_page") Integer perPage) throws JsonProcessingException {
+        BasicSearchResponse response = patentService.proSearch(expression, curPage, perPage);
+        return response;
     }
 
 }

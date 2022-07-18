@@ -1,38 +1,22 @@
 package cn.edu.bit.patentbackend.repository;
 
-import cn.edu.bit.patentbackend.bean.PatentWithBLOBs;
+import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
 import cn.edu.bit.patentbackend.mapper.PatentMapper;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.SSLContexts;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Repository;
 
-import javax.net.ssl.SSLContext;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +32,6 @@ public class PatentRepository {
 //
 //    @Value("${elasticsearch.port}")
 //    private Integer es_port;
-
     @Autowired
     private RestHighLevelClient restHighLevelClient;
 
@@ -70,6 +53,42 @@ public class PatentRepository {
         }
         List<Map<String, Object>> patents = patentMapper.selectPatentListByIds(idList);
         return patents;
+    }
+
+    public BasicSearchResponse searchByQueryBuilder(QueryBuilder queryBuilder, int curPage, int perPage) {
+        curPage = curPage >= 0 ? curPage : 0;
+        perPage = perPage > 0 ? perPage : 20;
+        int from = curPage * perPage;
+        int size = (perPage);
+
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(queryBuilder).from(from).size(size);
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.source(searchSourceBuilder);
+        SearchHits hits = null;
+        try {
+            SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+            hits = response.getHits();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        int i = 0;
+        ArrayList<Map<String, Object>> results = new ArrayList<>();
+        for (SearchHit hit : hits) {
+            //输出每条查询的结果信息
+            String sourceAsString = hit.getSourceAsString();
+            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+            //生成序号
+            sourceAsMap.put("index", curPage * perPage + (++i));
+            results.add(sourceAsMap);
+            System.out.println(hit.getSourceAsString());
+        }
+        System.out.println("<<========");
+        System.out.println("收到请求");
+        long totalHits = hits.getTotalHits().value;
+        int pageNum = (int)totalHits / perPage;
+        BasicSearchResponse response = new BasicSearchResponse(curPage, totalHits, pageNum, perPage, "", "","advanced", results);
+        return response;
     }
 
 //    public SearchHits advancedSearch(SearchRequest request) {

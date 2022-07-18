@@ -12,7 +12,7 @@ public interface PatentService {
 
     public BasicSearchResponse neuralSearch(String query, String field, Integer curPage, Integer perPage) throws JsonProcessingException;
 
-    BasicSearchResponse proSearch(String expression);
+    BasicSearchResponse proSearch(String expression, Integer curPage, Integer perPage);
 
-//    BasicSearchResponse advancedSearch(LinkedHashMap conditions, int curPage, int perPage);
+    BasicSearchResponse advancedSearch(LinkedHashMap conditions, int curPage, int perPage);
 }

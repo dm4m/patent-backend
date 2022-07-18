@@ -1,6 +1,5 @@
 package cn.edu.bit.patentbackend;
 
-import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -13,7 +12,6 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
@@ -22,8 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -109,15 +105,14 @@ class PatentBackendApplicationTests {
         org.elasticsearch.action.search.SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
         // 查询匹配
         SearchHits hits = response.getHits();
-
         System.out.println("took:" + response.getTook());
         System.out.println("timeout:" + response.isTimedOut());
     }
 
     @Test
     void expressionParser() throws IOException {
-        String expression = "(! abstract=\"纸筒\" & title=烟花)";
-        QueryBuilder builder = ExpressionUtil.expression2query(expression);
+        String expression = "(abstract=\"纸筒\" ! title=烟花)";
+        QueryBuilder builder = ExpressionUtil.expression2Query(expression);
         SearchRequest searchRequest = new SearchRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(builder);
