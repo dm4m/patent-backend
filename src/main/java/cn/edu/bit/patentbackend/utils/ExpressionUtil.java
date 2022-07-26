@@ -47,18 +47,6 @@ public class ExpressionUtil {
         return expression;
     }
 
-    /*
-    * 将高级检索条件转化为表达式
-    * */
-    public static String mapToExpression(){
-
-        return "";
-    }
-
-    public static QueryBuilder mapToQuery(){
-
-        return null;
-    }
 
     public static Boolean isValidCondition(AdvancedSearchCondition condition){
         if(condition == null){
@@ -87,8 +75,9 @@ public class ExpressionUtil {
             String matchType = curCondition.getMatchType();
             Character logicOp = logicMap.get(curCondition.getLogicOp());
             String queryText = curCondition.getQueryText();
-            String field = curCondition.getField();
-            // 不为 1时才需要处理运算符
+            // 需要将 Obj 字段名 转化成 ES 字段名
+            String field = PatentMapper.getDocField(curCondition.getField());
+            // 高级检索第一栏条件行不需要设置逻辑运算符，也不需要处理
             if(i != 0){
                 if(opStack.isEmpty()){
                     opStack.push(logicOp);
@@ -105,9 +94,9 @@ public class ExpressionUtil {
             }
             QueryBuilder curBuilder = null;
             if(matchType.equals("exact")){
-                curBuilder = QueryBuilders.termQuery(field, queryText);
+                curBuilder = PatentMapper.exactQuery(field, queryText);
             }else if(matchType.equals("fuzzy")){
-                curBuilder = QueryBuilders.matchQuery(field, queryText);
+                curBuilder = PatentMapper.fuzzyQuery(field, queryText);
             }else{
                 // todo 定义一个异常
                 throw new RuntimeException();
@@ -128,14 +117,17 @@ public class ExpressionUtil {
     * 将不含操作符的单个查询条件转化为 QueryBuilder
     * */
     public static QueryBuilder string2Query(String expression){
-//        "title = 烟花"
+        // "title = 烟花"
         expression.replace(" ", "");
         String[] splitRes = expression.split("=");
         QueryBuilder query = null;
+        // 需要将 Obj 字段名 转化成 ES 字段名
+        String field = PatentMapper.getDocField(splitRes[0]);
+        // 判断是精确匹配还是模糊匹配
         if(splitRes[1].charAt(0) == '\"'){
-            query = QueryBuilders.termQuery(splitRes[0], splitRes[1].replace("\"", ""));
+            query = PatentMapper.exactQuery(field, splitRes[1].replace("\"", ""));
         }else{
-            query = QueryBuilders.matchQuery(splitRes[0], splitRes[1]);
+            query = PatentMapper.fuzzyQuery(field, splitRes[1]);
         }
         return query;
     }
@@ -188,18 +180,6 @@ public class ExpressionUtil {
             calOnce(opStack, queryStack);
         }
         return queryStack.peek();
-    }
-
-    private static QueryBuilder calcuQuery(QueryBuilder firstQ, QueryBuilder secondQ, Character operator) {
-        BoolQueryBuilder resQuery = new BoolQueryBuilder();
-        if(operator == '!'){
-            resQuery.mustNot(firstQ);
-        }else if(operator == '&'){
-            resQuery.must(firstQ).must(secondQ);
-        }else if(operator == '|'){
-            resQuery.should(firstQ).should(secondQ);
-        }
-        return resQuery;
     }
 
     private static void calOnce(Stack<Character> opStack, Stack<QueryBuilder> queryStack){

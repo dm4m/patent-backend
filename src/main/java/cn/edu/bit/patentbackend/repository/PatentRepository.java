@@ -27,16 +27,11 @@ public class PatentRepository {
     @Autowired
     PatentMapper patentMapper;
 
-//    @Value("${elasticsearch.ip}")
-//    private String es_ip;
-//
-//    @Value("${elasticsearch.port}")
-//    private Integer es_port;
     @Autowired
     private RestHighLevelClient restHighLevelClient;
 
 
-    public SearchHits basicSearch(SearchRequest request) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+    public SearchHits basicSearch(SearchRequest request) throws IOException {
         SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
         // 查询匹配
         SearchHits hits = response.getHits();
@@ -81,10 +76,10 @@ public class PatentRepository {
             //生成序号
             sourceAsMap.put("index", curPage * perPage + (++i));
             results.add(sourceAsMap);
-            System.out.println(hit.getSourceAsString());
+//            System.out.println(hit.getSourceAsString());
         }
-        System.out.println("<<========");
-        System.out.println("收到请求");
+//        System.out.println("<<========");
+//        System.out.println("收到请求");
         long totalHits = hits.getTotalHits().value;
         int pageNum = (int)totalHits / perPage;
         BasicSearchResponse response = new BasicSearchResponse(curPage, totalHits, pageNum, perPage, "", "","advanced", results);

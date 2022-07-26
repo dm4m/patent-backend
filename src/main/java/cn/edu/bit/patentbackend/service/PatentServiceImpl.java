@@ -4,14 +4,12 @@ import cn.edu.bit.patentbackend.bean.AdvancedSearchCondition;
 import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
 import cn.edu.bit.patentbackend.repository.PatentRepository;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
+import cn.edu.bit.patentbackend.utils.PatentMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,8 +17,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Service
@@ -35,25 +31,8 @@ public class PatentServiceImpl implements PatentService{
     @Override
     public BasicSearchResponse basicSearch(String query, String field, Integer curPage, Integer perPage) throws IOException {
         QueryBuilder queryBuilder = null;
-        if(field.equals("title")){
-            queryBuilder = QueryBuilders.matchQuery("title", query);
-        }else if(field.equals("abstract")){
-            queryBuilder = QueryBuilders.matchQuery("abstract", query);
-        }else if(field.equals("signoryItem")){
-            queryBuilder = QueryBuilders.matchQuery("signory_item", query);
-        }else if(field.equals("patentCode")){
-            queryBuilder = QueryBuilders.termQuery("patent_code.keyword", query);
-        }else if(field.equals("publicationNo")){
-            queryBuilder = QueryBuilders.termQuery("publication_no.keyword", query);
-        }else if(field.equals("applicant")){
-            queryBuilder = QueryBuilders.wildcardQuery("applicant_list.keyword", "*" + query + "*");
-        }else if(field.equals("inventor")){
-            queryBuilder = QueryBuilders.wildcardQuery("inventor_list.keyword", "*" + query + "*");
-        }else if(field.equals("mainClass")){
-            queryBuilder = QueryBuilders.wildcardQuery("main_class_list.keyword", "*" + query + "*");
-        }else if(field.equals("class")){
-            queryBuilder = QueryBuilders.wildcardQuery("class_list.keyword", "*" + query + "*");
-        }
+        queryBuilder = PatentMapper.simpleQuery(field, query);
+        System.out.println(queryBuilder);
         BasicSearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
         return response;
     }
@@ -98,6 +77,5 @@ public class PatentServiceImpl implements PatentService{
         BasicSearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
         return response;
     }
-
 
 }
