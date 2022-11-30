@@ -43,7 +43,7 @@ public class PatentServiceImpl implements PatentService{
         //通过query获取id list
         WebClient webClient = WebClient.create(flaskUrl);
         Mono<String> mono = webClient.get()
-                .uri("/?query={query}&field={field}", query, field)
+                .uri("/neuralSearch/?query={query}&field={field}", query, field)
                 .retrieve()
                 .bodyToMono(String.class);
         String httpResponse = mono.block();
