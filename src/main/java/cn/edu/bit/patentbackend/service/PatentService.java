@@ -1,6 +1,6 @@
 package cn.edu.bit.patentbackend.service;
 
-import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
+import cn.edu.bit.patentbackend.bean.SearchResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.io.IOException;
@@ -8,11 +8,11 @@ import java.util.LinkedHashMap;
 
 
 public interface PatentService {
-    public BasicSearchResponse basicSearch(String query, String field, Integer page, Integer perPage) throws IOException;
+    public SearchResponse basicSearch(String query, String field, Integer page, Integer perPage) throws IOException;
 
-    public BasicSearchResponse neuralSearch(String query, String field, Integer curPage, Integer perPage) throws JsonProcessingException;
+    public SearchResponse neuralSearch(String query, String field, Integer curPage, Integer perPage) throws JsonProcessingException;
 
-    BasicSearchResponse proSearch(String expression, Integer curPage, Integer perPage);
+    SearchResponse proSearch(String expression, Integer curPage, Integer perPage);
 
-    BasicSearchResponse advancedSearch(LinkedHashMap conditions, int curPage, int perPage);
+    SearchResponse advancedSearch(LinkedHashMap conditions, int curPage, int perPage);
 }

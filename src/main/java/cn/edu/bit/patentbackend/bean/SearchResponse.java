@@ -3,13 +3,15 @@ package cn.edu.bit.patentbackend.bean;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicSearchResponse {
+public class SearchResponse {
     Integer curPage;
     Long totalHits;
     Integer pageNum;
@@ -17,5 +19,8 @@ public class BasicSearchResponse {
     String query;
     String field;
     String searchType;
+
+    LinkedHashMap conditionMap;
+
     List<Map<String, Object>> results;
 }

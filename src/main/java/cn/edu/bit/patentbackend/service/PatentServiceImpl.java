@@ -1,14 +1,13 @@
 package cn.edu.bit.patentbackend.service;
 
 import cn.edu.bit.patentbackend.bean.AdvancedSearchCondition;
-import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
+import cn.edu.bit.patentbackend.bean.SearchResponse;
 import cn.edu.bit.patentbackend.repository.PatentRepository;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
 import cn.edu.bit.patentbackend.utils.PatentMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,16 +28,19 @@ public class PatentServiceImpl implements PatentService{
     String flaskUrl;
 
     @Override
-    public BasicSearchResponse basicSearch(String query, String field, Integer curPage, Integer perPage) throws IOException {
+    public SearchResponse basicSearch(String query, String field, Integer curPage, Integer perPage) throws IOException {
         QueryBuilder queryBuilder = null;
         queryBuilder = PatentMapper.simpleQuery(field, query);
         System.out.println(queryBuilder);
-        BasicSearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
+        SearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
+        response.setSearchType("basic");
+        response.setField(field);
+        response.setQuery(query);
         return response;
     }
 
     @Override
-    public BasicSearchResponse neuralSearch(String query, String field, Integer curPage, Integer perPage) throws JsonProcessingException {
+    public SearchResponse neuralSearch(String query, String field, Integer curPage, Integer perPage) throws JsonProcessingException {
         ArrayList<Map<String, Object>> results = new ArrayList<>();
         //通过query获取id list
         WebClient webClient = WebClient.create(flaskUrl);
@@ -59,22 +61,26 @@ public class PatentServiceImpl implements PatentService{
         }
         int totalHits = patentList.size();
         int pageNum = totalHits / perPage;
-        BasicSearchResponse response = new BasicSearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", "neural",results);
+        SearchResponse response = new SearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", "neural", null, results);
         return response;
     }
 
     @Override
-    public BasicSearchResponse proSearch(String expression, Integer curPage, Integer perPage) {
+    public SearchResponse proSearch(String expression, Integer curPage, Integer perPage) {
         QueryBuilder queryBuilder = ExpressionUtil.expression2Query(expression);
-        BasicSearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
+        SearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
+        response.setSearchType("pro");
+        response.setQuery(expression);
         return response;
     }
 
     @Override
-    public BasicSearchResponse advancedSearch(LinkedHashMap conditionMap, int curPage, int perPage) {
+    public SearchResponse advancedSearch(LinkedHashMap conditionMap, int curPage, int perPage) {
         ArrayList<AdvancedSearchCondition> conditions = new ArrayList<>(conditionMap.values());
         QueryBuilder queryBuilder = ExpressionUtil.condition2Query(conditions);
-        BasicSearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
+        SearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
+        response.setSearchType("advanced");
+        response.setConditionMap(conditionMap);
         return response;
     }
 

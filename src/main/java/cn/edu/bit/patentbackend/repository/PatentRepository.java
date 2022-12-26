@@ -1,9 +1,8 @@
 package cn.edu.bit.patentbackend.repository;
 
-import cn.edu.bit.patentbackend.bean.BasicSearchResponse;
+import cn.edu.bit.patentbackend.bean.SearchResponse;
 import cn.edu.bit.patentbackend.mapper.PatentMapper;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -14,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +29,7 @@ public class PatentRepository {
 
 
     public SearchHits basicSearch(SearchRequest request) throws IOException {
-        SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
+        org.elasticsearch.action.search.SearchResponse response = restHighLevelClient.search(request, RequestOptions.DEFAULT);
         // 查询匹配
         SearchHits hits = response.getHits();
         System.out.println("took:" + response.getTook());
@@ -50,7 +47,7 @@ public class PatentRepository {
         return patents;
     }
 
-    public BasicSearchResponse searchByQueryBuilder(QueryBuilder queryBuilder, int curPage, int perPage) {
+    public SearchResponse searchByQueryBuilder(QueryBuilder queryBuilder, int curPage, int perPage) {
         curPage = curPage >= 0 ? curPage : 0;
         perPage = perPage > 0 ? perPage : 20;
         int from = curPage * perPage;
@@ -62,7 +59,7 @@ public class PatentRepository {
         searchRequest.source(searchSourceBuilder);
         SearchHits hits = null;
         try {
-            SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+            org.elasticsearch.action.search.SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
             hits = response.getHits();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -82,7 +79,7 @@ public class PatentRepository {
 //        System.out.println("收到请求");
         long totalHits = hits.getTotalHits().value;
         int pageNum = (int)totalHits / perPage;
-        BasicSearchResponse response = new BasicSearchResponse(curPage, totalHits, pageNum, perPage, "", "","advanced", results);
+        SearchResponse response = new SearchResponse(curPage, totalHits, pageNum, perPage, "", "","", null, results);
         return response;
     }
 

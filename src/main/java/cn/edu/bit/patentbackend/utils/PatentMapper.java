@@ -84,6 +84,7 @@ public class PatentMapper {
     }
 
     public static QueryBuilder exactQuery(String field, String query){
+        // 以下所用字段名是已转换成 ES 对应的字段名
         if(field.equals("publicationNo")
                 || field.equals("patentCode")
                 || field.equals("agent")){
@@ -94,7 +95,7 @@ public class PatentMapper {
                 || field.equals("classNo")
                 || field.equals("applicant")
                 || field.equals("inventor")
-                || field.equals("abstractText")
+                || field.equals("abstract")
                 || field.equals("title")
                 || field.equals("signoryItem")){
             return QueryBuilders.matchQuery(getDocField(field), query).analyzer("keyword");
