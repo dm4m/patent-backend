@@ -11,7 +11,11 @@ import org.elasticsearch.index.query.QueryBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -51,7 +55,6 @@ public class PatentServiceImpl implements PatentService{
         String httpResponse = mono.block();
         ObjectMapper mapper = new ObjectMapper();
         List<Integer> list = mapper.readValue(httpResponse, ArrayList.class);
-//        List<Integer> list = Arrays.asList(1, 2);
         List<Map<String, Object>> patentList = patentRepository.getPatentById(list);
         int i = 0;
         for (Map patent : patentList) {
@@ -81,6 +84,34 @@ public class PatentServiceImpl implements PatentService{
         SearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
         response.setSearchType("advanced");
         response.setConditionMap(conditionMap);
+        return response;
+    }
+
+    @Override
+    public SearchResponse uploadSearch(MultipartFile file) throws JsonProcessingException {
+
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part("file", file.getResource());
+        WebClient webClient = WebClient.create(flaskUrl);
+        Mono<String> mono = webClient.post()
+                .uri("/uploadSearch")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(builder.build()))
+                .retrieve()
+                .bodyToMono(String.class);
+        String httpResponse = mono.block();
+        ObjectMapper mapper = new ObjectMapper();
+        List<Integer> list = mapper.readValue(httpResponse, ArrayList.class);
+        List<Map<String, Object>> patentList = patentRepository.getPatentById(list);
+        ArrayList<Map<String, Object>> results = new ArrayList<>();
+        int i = 0;
+        for (Map patent : patentList) {
+            //生成序号
+            patent.put("index", (++i));
+            results.add(patent);
+        }
+        int totalHits = patentList.size();
+        SearchResponse response = new SearchResponse(0, (long)totalHits, 1, 20, "", "", "upload", null, results);
         return response;
     }
 

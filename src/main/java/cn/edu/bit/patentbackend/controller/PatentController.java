@@ -5,7 +5,11 @@ import cn.edu.bit.patentbackend.service.PatentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.io.IOException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.*;
+import java.net.URI;
 import java.util.LinkedHashMap;
 
 @RestController
@@ -52,5 +56,17 @@ public class PatentController {
         SearchResponse response = patentService.proSearch(expression, curPage, perPage);
         return response;
     }
+
+    @RequestMapping(path = "/uploadSearch", method = RequestMethod.POST)
+    public SearchResponse uploadSearch(@RequestParam("file")MultipartFile file) {
+        SearchResponse response = null;
+        try {
+            response = patentService.uploadSearch(file);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return response;
+    }
+
 
 }
