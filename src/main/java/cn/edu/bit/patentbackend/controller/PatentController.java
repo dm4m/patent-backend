@@ -1,5 +1,7 @@
 package cn.edu.bit.patentbackend.controller;
 import cn.edu.bit.patentbackend.bean.AdvancedSearchRequset;
+import cn.edu.bit.patentbackend.bean.AnalysisCollection;
+import cn.edu.bit.patentbackend.bean.AnalysisCollectionItemRsp;
 import cn.edu.bit.patentbackend.bean.SearchResponse;
 import cn.edu.bit.patentbackend.service.PatentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,7 +12,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/patent")
@@ -68,5 +73,34 @@ public class PatentController {
         return response;
     }
 
+    @RequestMapping(path = "/analysisCollection", method = RequestMethod.GET)
+    public ArrayList<AnalysisCollection> getAnalysisCollection(){
+        ArrayList<AnalysisCollection> res = patentService.getAnalysisCollection();
+        return res;
+    }
 
+    @RequestMapping(path = "/analysisCollectionItem", method = RequestMethod.GET)
+    public AnalysisCollectionItemRsp getAnalysisCollectionItems(@RequestParam("collectionId") Integer collectionId,
+                                                                @RequestParam("pageIndex") Integer pageIndex,
+                                                                @RequestParam("pageSize") Integer pageSize)
+    {
+        System.out.println(collectionId + " " + pageIndex + " " + pageSize);
+        return patentService.getAnalysisCollectionItems(collectionId, pageIndex, pageSize);
+    }
+
+    @RequestMapping(path = "/analysisCollectionItem", method = RequestMethod.DELETE)
+    public AnalysisCollectionItemRsp deleteAnalysisCollectionItems(@RequestBody Map request)
+    {
+
+        List itemIds = (List) request.get("itemIds");
+        patentService.deleteAnalysisCollectionItems(itemIds);
+        return null;
+    }
+
+    @RequestMapping(path = "/analysisCollection", method = RequestMethod.DELETE)
+    public AnalysisCollectionItemRsp deleteAnalysisCollectionItems(@RequestParam("collectionId")Integer collectionId)
+    {
+        patentService.deleteAnalysisCollection(collectionId);
+        return null;
+    }
 }

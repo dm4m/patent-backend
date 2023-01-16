@@ -1,10 +1,10 @@
 package cn.edu.bit.patentbackend.service;
 
-import cn.edu.bit.patentbackend.bean.AdvancedSearchCondition;
-import cn.edu.bit.patentbackend.bean.SearchResponse;
+import cn.edu.bit.patentbackend.bean.*;
+import cn.edu.bit.patentbackend.mapper.PatentMapper;
 import cn.edu.bit.patentbackend.repository.PatentRepository;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
-import cn.edu.bit.patentbackend.utils.PatentMapper;
+import cn.edu.bit.patentbackend.utils.PatentFieldMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -28,13 +28,16 @@ public class PatentServiceImpl implements PatentService{
     @Autowired
     PatentRepository patentRepository;
 
+    @Autowired
+    PatentMapper patentMapper;
+
     @Value("${flask.url}")
     String flaskUrl;
 
     @Override
     public SearchResponse basicSearch(String query, String field, Integer curPage, Integer perPage) throws IOException {
         QueryBuilder queryBuilder = null;
-        queryBuilder = PatentMapper.simpleQuery(field, query);
+        queryBuilder = PatentFieldMapper.simpleQuery(field, query);
         System.out.println(queryBuilder);
         SearchResponse response = patentRepository.searchByQueryBuilder(queryBuilder, curPage, perPage);
         response.setSearchType("basic");
@@ -115,4 +118,26 @@ public class PatentServiceImpl implements PatentService{
         return response;
     }
 
+    @Override
+    public ArrayList<AnalysisCollection> getAnalysisCollection() {
+        return (ArrayList<AnalysisCollection>) patentMapper.getAllAnalysisCollection();
+    }
+
+    @Override
+    public AnalysisCollectionItemRsp getAnalysisCollectionItems(Integer collectionId, Integer pageIndex, Integer pageSize) {
+        List<AnalysisCollectionItem> analysisCollectionItems = patentMapper.getAnalysisCollectionItems(collectionId, pageSize, pageIndex * pageSize);
+        Integer acItemsAccount = patentMapper.getACItemsAccount(collectionId);
+        AnalysisCollectionItemRsp analysisCollectionItemRsp = new AnalysisCollectionItemRsp(analysisCollectionItems, acItemsAccount);
+        return analysisCollectionItemRsp;
+    }
+
+    @Override
+    public void deleteAnalysisCollectionItems(List<Integer> itemIds) {
+        patentMapper.deleteAnalysisCollectionItems(itemIds);
+    }
+
+    @Override
+    public void deleteAnalysisCollection(Integer collectionId) {
+        patentMapper.deleteAnalysisCollectionById(collectionId);
+    }
 }

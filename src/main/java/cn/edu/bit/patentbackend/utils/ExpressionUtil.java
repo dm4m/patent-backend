@@ -3,7 +3,6 @@ package cn.edu.bit.patentbackend.utils;
 import cn.edu.bit.patentbackend.bean.AdvancedSearchCondition;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 
 import java.util.*;
 
@@ -76,7 +75,7 @@ public class ExpressionUtil {
             Character logicOp = logicMap.get(curCondition.getLogicOp());
             String queryText = curCondition.getQueryText();
             // 需要将 Obj 字段名 转化成 ES 字段名
-            String field = PatentMapper.getDocField(curCondition.getField());
+            String field = PatentFieldMapper.getDocField(curCondition.getField());
             // 高级检索第一栏条件行不需要设置逻辑运算符，也不需要处理
             if(i != 0){
                 if(opStack.isEmpty()){
@@ -94,9 +93,9 @@ public class ExpressionUtil {
             }
             QueryBuilder curBuilder = null;
             if(matchType.equals("exact")){
-                curBuilder = PatentMapper.exactQuery(field, queryText);
+                curBuilder = PatentFieldMapper.exactQuery(field, queryText);
             }else if(matchType.equals("fuzzy")){
-                curBuilder = PatentMapper.fuzzyQuery(field, queryText);
+                curBuilder = PatentFieldMapper.fuzzyQuery(field, queryText);
             }else{
                 // todo 定义一个异常
                 throw new RuntimeException();
@@ -122,12 +121,12 @@ public class ExpressionUtil {
         String[] splitRes = expression.split("=");
         QueryBuilder query = null;
         // 需要将 Obj 字段名 转化成 ES 字段名
-        String field = PatentMapper.getDocField(splitRes[0]);
+        String field = PatentFieldMapper.getDocField(splitRes[0]);
         // 判断是精确匹配还是模糊匹配
         if(splitRes[1].charAt(0) == '\"'){
-            query = PatentMapper.exactQuery(field, splitRes[1].replace("\"", ""));
+            query = PatentFieldMapper.exactQuery(field, splitRes[1].replace("\"", ""));
         }else{
-            query = PatentMapper.fuzzyQuery(field, splitRes[1]);
+            query = PatentFieldMapper.fuzzyQuery(field, splitRes[1]);
         }
         return query;
     }

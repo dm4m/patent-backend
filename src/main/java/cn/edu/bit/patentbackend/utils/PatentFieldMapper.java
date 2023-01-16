@@ -1,6 +1,5 @@
 package cn.edu.bit.patentbackend.utils;
 
-import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
@@ -10,7 +9,7 @@ import java.util.Map;
 /*
 * 提供 Java / JS Object 字段名 与 ES fieldname 之间的相互映射
 * */
-public class PatentMapper {
+public class PatentFieldMapper {
     private static Map<String, String> obj2Doc;
     private static Map<String, String> doc2Obj;
 
