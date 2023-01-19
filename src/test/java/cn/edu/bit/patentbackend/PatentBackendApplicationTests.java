@@ -143,8 +143,10 @@ class PatentBackendApplicationTests {
 //        System.out.println(analysisCollectionItems);
 //        Integer acItemsAccount = patentMapper.getACItemsAccount(1);
 //        System.out.println(acItemsAccount);
-//        ArrayList<Integer> list = new ArrayList<>(Arrays.asList(4, 5));
+//        ArrayList<Integer> list = new ArrayList<>(Arrays.asList(1, 7));
 //        patentMapper.deleteAnalysisCollectionItems(list);
-        patentMapper.deleteAnalysisCollectionById(3);
+//        patentMapper.deleteAnalysisCollectionById(3);
+//        patentMapper.insertAnalysisCollectionItems(list, 1);
+        patentMapper.insertAnalysisCollection("test3");
     }
 }

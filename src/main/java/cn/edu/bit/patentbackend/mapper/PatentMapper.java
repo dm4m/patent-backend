@@ -41,7 +41,7 @@ public interface PatentMapper {
                 "<foreach collection='itemIds' item='itemId' open='(' separator=',' close=')'> " +
                         "#{itemId}" +
                 "</foreach>" +
-            "</script>"
+            "</script>" 
     })
     void deleteAnalysisCollectionItems(List<Integer> itemIds);
 
@@ -49,4 +49,19 @@ public interface PatentMapper {
             "delete from analysis_collection where collection_id = #{collectionId}"
     })
     void deleteAnalysisCollectionById(Integer collectionId);
+
+    @Insert({
+            "<script>"  +
+                    "insert IGNORE INTO analysis_collection_item(collection_id, patent_id) VALUES" +
+                    "<foreach collection='patentIds' item='patentId' separator=','> " +
+                        "(#{collectionId}, #{patentId})" +
+                    "</foreach>" +
+                    "</script>"
+    })
+    void insertAnalysisCollectionItems(List patentIds, Integer collectionId);
+
+    @Insert({
+            "insert INTO analysis_collection(name) VALUES (#{collectionName})"
+    })
+    void insertAnalysisCollection(String collectionName);
 }

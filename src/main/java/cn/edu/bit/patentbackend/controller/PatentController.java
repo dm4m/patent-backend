@@ -5,13 +5,12 @@ import cn.edu.bit.patentbackend.bean.AnalysisCollectionItemRsp;
 import cn.edu.bit.patentbackend.bean.SearchResponse;
 import cn.edu.bit.patentbackend.service.PatentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,19 +87,39 @@ public class PatentController {
         return patentService.getAnalysisCollectionItems(collectionId, pageIndex, pageSize);
     }
 
+    @RequestMapping(path = "/analysisCollection", method = RequestMethod.DELETE)
+    public void deleteAnalysisCollection(@RequestParam("collectionId")Integer collectionId)
+    {
+        patentService.deleteAnalysisCollection(collectionId);
+        return;
+    }
+
+    @RequestMapping(path = "/analysisCollection", method = RequestMethod.POST)
+    public void insertAnalysisCollection(@RequestBody Map request)
+    {
+        String collectionName = (String) request.get("collectionName");
+        patentService.insertAnalysisCollection(collectionName);
+        return;
+    }
+
     @RequestMapping(path = "/analysisCollectionItem", method = RequestMethod.DELETE)
-    public AnalysisCollectionItemRsp deleteAnalysisCollectionItems(@RequestBody Map request)
+    public void deleteAnalysisCollectionItems(@RequestBody Map request)
     {
 
         List itemIds = (List) request.get("itemIds");
         patentService.deleteAnalysisCollectionItems(itemIds);
-        return null;
+        return;
     }
 
-    @RequestMapping(path = "/analysisCollection", method = RequestMethod.DELETE)
-    public AnalysisCollectionItemRsp deleteAnalysisCollectionItems(@RequestParam("collectionId")Integer collectionId)
+    @RequestMapping(path = "/analysisCollectionItem", method = RequestMethod.POST)
+    public void insertAnalysisCollectionItems(@RequestBody Map request)
     {
-        patentService.deleteAnalysisCollection(collectionId);
-        return null;
+        List patentIds = (List) request.get("patentIds");
+        Integer collectionId = (Integer) request.get("collectionId");
+        patentService.insertAnalysisCollectionItems(patentIds, collectionId);
+        System.out.println(collectionId);
+        return;
     }
+
+
 }

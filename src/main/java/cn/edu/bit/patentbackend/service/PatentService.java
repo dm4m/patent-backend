@@ -30,4 +30,8 @@ public interface PatentService {
     void deleteAnalysisCollectionItems(List<Integer> itemIds);
 
     void deleteAnalysisCollection(Integer collectionId);
+
+    void insertAnalysisCollectionItems(List patentIds, Integer collectionId);
+
+    void insertAnalysisCollection(String collectionName);
 }

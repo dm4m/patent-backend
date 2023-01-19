@@ -140,4 +140,14 @@ public class PatentServiceImpl implements PatentService{
     public void deleteAnalysisCollection(Integer collectionId) {
         patentMapper.deleteAnalysisCollectionById(collectionId);
     }
+
+    @Override
+    public void insertAnalysisCollectionItems(List patentIds, Integer collectionId) {
+        patentMapper.insertAnalysisCollectionItems(patentIds, collectionId);
+    }
+
+    @Override
+    public void insertAnalysisCollection(String collectionName) {
+        patentMapper.insertAnalysisCollection(collectionName);
+    }
 }
