@@ -1,8 +1,6 @@
 package cn.edu.bit.patentbackend;
-
-import cn.edu.bit.patentbackend.bean.AnalysisCollection;
-import cn.edu.bit.patentbackend.bean.AnalysisCollectionItem;
 import cn.edu.bit.patentbackend.mapper.PatentMapper;
+import cn.edu.bit.patentbackend.mapper.ReportMapper;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -39,6 +37,9 @@ class PatentBackendApplicationTests {
     String flaskUrl;
     @Autowired
     PatentMapper patentMapper;
+
+    @Autowired
+    ReportMapper reportMapper;
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
@@ -137,16 +138,7 @@ class PatentBackendApplicationTests {
     }
     @Test
     void testSql(){
-//        List<AnalysisCollection> allAnalysisCollection = patentMapper.getAllAnalysisCollection();
-//        System.out.println(allAnalysisCollection);
-//        List<AnalysisCollectionItem> analysisCollectionItems = patentMapper.getAnalysisCollectionItems(1, 3, 0);
-//        System.out.println(analysisCollectionItems);
-//        Integer acItemsAccount = patentMapper.getACItemsAccount(1);
-//        System.out.println(acItemsAccount);
-//        ArrayList<Integer> list = new ArrayList<>(Arrays.asList(1, 7));
-//        patentMapper.deleteAnalysisCollectionItems(list);
-//        patentMapper.deleteAnalysisCollectionById(3);
-//        patentMapper.insertAnalysisCollectionItems(list, 1);
-        patentMapper.insertAnalysisCollection("test3");
+        reportMapper.getReportContentItems(1, 5, 0)
+        System.out.println("111");
     }
 }

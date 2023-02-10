@@ -1,18 +1,14 @@
 package cn.edu.bit.patentbackend.service;
 
-import cn.edu.bit.patentbackend.bean.AnalysisCollection;
-import cn.edu.bit.patentbackend.bean.AnalysisCollectionItemRsp;
 import cn.edu.bit.patentbackend.bean.SearchResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 
-public interface PatentService {
+public interface SearchService {
     public SearchResponse basicSearch(String query, String field, Integer page, Integer perPage) throws IOException;
 
     public SearchResponse neuralSearch(String query, String field, Integer curPage, Integer perPage) throws JsonProcessingException;
@@ -23,15 +19,5 @@ public interface PatentService {
 
     SearchResponse uploadSearch(MultipartFile file) throws JsonProcessingException;
 
-    ArrayList<AnalysisCollection> getAnalysisCollection();
 
-    AnalysisCollectionItemRsp getAnalysisCollectionItems(Integer collectionId, Integer pageIndex, Integer pageSize);
-
-    void deleteAnalysisCollectionItems(List<Integer> itemIds);
-
-    void deleteAnalysisCollection(Integer collectionId);
-
-    void insertAnalysisCollectionItems(List patentIds, Integer collectionId);
-
-    void insertAnalysisCollection(String collectionName);
 }

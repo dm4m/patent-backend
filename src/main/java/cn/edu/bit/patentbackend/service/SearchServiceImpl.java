@@ -23,13 +23,15 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-public class PatentServiceImpl implements PatentService{
+public class SearchServiceImpl implements SearchService {
 
     @Autowired
     PatentRepository patentRepository;
 
     @Autowired
     PatentMapper patentMapper;
+
+
 
     @Value("${flask.url}")
     String flaskUrl;
@@ -118,36 +120,5 @@ public class PatentServiceImpl implements PatentService{
         return response;
     }
 
-    @Override
-    public ArrayList<AnalysisCollection> getAnalysisCollection() {
-        return (ArrayList<AnalysisCollection>) patentMapper.getAllAnalysisCollection();
-    }
 
-    @Override
-    public AnalysisCollectionItemRsp getAnalysisCollectionItems(Integer collectionId, Integer pageIndex, Integer pageSize) {
-        List<AnalysisCollectionItem> analysisCollectionItems = patentMapper.getAnalysisCollectionItems(collectionId, pageSize, pageIndex * pageSize);
-        Integer acItemsAccount = patentMapper.getACItemsAccount(collectionId);
-        AnalysisCollectionItemRsp analysisCollectionItemRsp = new AnalysisCollectionItemRsp(analysisCollectionItems, acItemsAccount);
-        return analysisCollectionItemRsp;
-    }
-
-    @Override
-    public void deleteAnalysisCollectionItems(List<Integer> itemIds) {
-        patentMapper.deleteAnalysisCollectionItems(itemIds);
-    }
-
-    @Override
-    public void deleteAnalysisCollection(Integer collectionId) {
-        patentMapper.deleteAnalysisCollectionById(collectionId);
-    }
-
-    @Override
-    public void insertAnalysisCollectionItems(List patentIds, Integer collectionId) {
-        patentMapper.insertAnalysisCollectionItems(patentIds, collectionId);
-    }
-
-    @Override
-    public void insertAnalysisCollection(String collectionName) {
-        patentMapper.insertAnalysisCollection(collectionName);
-    }
 }
