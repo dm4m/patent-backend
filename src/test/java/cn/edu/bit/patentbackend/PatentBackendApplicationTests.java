@@ -1,4 +1,5 @@
 package cn.edu.bit.patentbackend;
+import cn.edu.bit.patentbackend.bean.InsertOut;
 import cn.edu.bit.patentbackend.mapper.PatentMapper;
 import cn.edu.bit.patentbackend.mapper.ReportMapper;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @SpringBootTest
@@ -138,7 +140,6 @@ class PatentBackendApplicationTests {
     }
     @Test
     void testSql(){
-        reportMapper.getReportContentItems(1, 5, 0)
-        System.out.println("111");
+
     }
 }
