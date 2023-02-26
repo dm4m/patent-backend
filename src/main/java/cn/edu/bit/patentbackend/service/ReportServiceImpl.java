@@ -65,4 +65,9 @@ public class ReportServiceImpl implements ReportService{
         String itemType = ReportContentType.Novelty;
         reportMapper.insertRCItem(itemType, noveltyResultId, itemType + noveltyResultId.toString(), reportId);
     }
+
+    @Override
+    public ArrayList<String> getSignorysById(Integer patentId) {
+        return reportMapper.getSignorysById(patentId);
+    }
 }

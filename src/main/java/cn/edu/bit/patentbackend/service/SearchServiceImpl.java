@@ -69,7 +69,7 @@ public class SearchServiceImpl implements SearchService {
         }
         int totalHits = patentList.size();
         int pageNum = totalHits / perPage;
-        SearchResponse response = new SearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", "neural", null, results);
+        SearchResponse response = new SearchResponse(curPage, (long)totalHits, pageNum, perPage, query, "title", "neural", null, null, results);
         return response;
     }
 
@@ -106,8 +106,11 @@ public class SearchServiceImpl implements SearchService {
                 .bodyToMono(String.class);
         String httpResponse = mono.block();
         ObjectMapper mapper = new ObjectMapper();
-        List<Integer> list = mapper.readValue(httpResponse, ArrayList.class);
-        List<Map<String, Object>> patentList = patentRepository.getPatentById(list);
+//      List<Integer> list = mapper.readValue(httpResponse, ArrayList.class);
+        HashMap flaskRes = mapper.readValue(httpResponse, HashMap.class);
+        List<Integer> patentIdList = (List<Integer>) flaskRes.get("res_list");
+        List<String> signoryList = (List<String>) flaskRes.get("signory_list");
+        List<Map<String, Object>> patentList = patentRepository.getPatentById(patentIdList);
         ArrayList<Map<String, Object>> results = new ArrayList<>();
         int i = 0;
         for (Map patent : patentList) {
@@ -116,9 +119,8 @@ public class SearchServiceImpl implements SearchService {
             results.add(patent);
         }
         int totalHits = patentList.size();
-        SearchResponse response = new SearchResponse(0, (long)totalHits, 1, 20, "", "", "upload", null, results);
+        SearchResponse response = new SearchResponse(0, (long)totalHits, 1, 20, "", "", "upload", null, signoryList, results);
         return response;
     }
-
 
 }

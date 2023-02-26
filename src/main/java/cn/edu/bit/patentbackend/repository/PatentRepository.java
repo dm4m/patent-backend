@@ -79,7 +79,7 @@ public class PatentRepository {
 //        System.out.println("收到请求");
         long totalHits = hits.getTotalHits().value;
         int pageNum = (int)totalHits / perPage;
-        SearchResponse response = new SearchResponse(curPage, totalHits, pageNum, perPage, "", "","", null, results);
+        SearchResponse response = new SearchResponse(curPage, totalHits, pageNum, perPage, "", "","", null, null, results);
         return response;
     }
 

@@ -5,6 +5,7 @@ import cn.edu.bit.patentbackend.bean.Report2gen;
 import cn.edu.bit.patentbackend.bean.ReportContentItem;
 import org.apache.ibatis.annotations.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ReportMapper {
@@ -83,4 +84,7 @@ public interface ReportMapper {
                     "</script>"
     })
     void insertNoveltyAnaItems(Integer noveltyResultId, List noveltyAnalysisResults);
+
+    @Select("SELECT signory_item FROM signory where patent_id = #{patentId}")
+    ArrayList<String> getSignorysById(Integer patentId);
 }

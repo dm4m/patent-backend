@@ -140,6 +140,7 @@ class PatentBackendApplicationTests {
     }
     @Test
     void testSql(){
-
+        ArrayList<String> signorys = reportMapper.getSignorysById(1);
+        System.out.println("q1");
     }
 }

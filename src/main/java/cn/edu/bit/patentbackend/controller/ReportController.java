@@ -73,4 +73,9 @@ public class ReportController {
         return;
     }
 
+    @RequestMapping(path = "/signory", method = RequestMethod.GET)
+    public ArrayList<String> getSignorysById(@RequestParam("patentId")Integer patentId){
+        return reportService.getSignorysById(patentId);
+    }
+
 }

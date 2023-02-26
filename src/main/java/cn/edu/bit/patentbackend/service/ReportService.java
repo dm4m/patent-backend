@@ -21,4 +21,6 @@ public interface ReportService {
     void insertSearchResults(List patentIds, Integer reportId);
 
     void insertNoveltyResults(List noveltyAnalysisResult, String focusSigory, Integer reportId);
+
+    ArrayList<String> getSignorysById(Integer patentId);
 }

@@ -22,5 +22,7 @@ public class SearchResponse {
 
     LinkedHashMap conditionMap;
 
+    List<String> signoryList;
+
     List<Map<String, Object>> results;
 }
