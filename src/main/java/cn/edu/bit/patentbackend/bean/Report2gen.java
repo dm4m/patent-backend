@@ -8,4 +8,8 @@ public class Report2gen {
     Integer reportId;
     String reportName;
 
+    String status;
+
+    String pdfFilePath;
+
 }

@@ -7,13 +7,16 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface ReportMapper {
     @Results(value = {
             @Result(property = "reportId", column = "report_id", id = true),
-            @Result(property = "reportName", column = "report_name")}
+            @Result(property = "reportName", column = "report_name"),
+            @Result(property = "status", column = "status"),
+            @Result(property = "pdfFilePath", column = "pdf_file_path")}
     )
-    @Select("SELECT report_id, report_name FROM report2generate")
+    @Select("SELECT report_id, report_name, status, pdf_file_path FROM report2generate")
     List<Report2gen> getAllReport2gen();
 
     @Delete({
@@ -77,14 +80,33 @@ public interface ReportMapper {
 
     @Insert({
             "<script>"  +
-                    "insert IGNORE INTO novelty_ana_item(novelty_ana_id, relevant_sig, compare_result, ori_patent_title) VALUES" +
-                    "<foreach collection='noveltyAnalysisResults' item='result' separator=','> " +
+                "insert IGNORE INTO novelty_ana_item(novelty_ana_id, relevant_sig, compare_result, ori_patent_title) VALUES" +
+                "<foreach collection='noveltyAnalysisResults' item='result' separator=','> " +
                     "(#{noveltyResultId}, #{result.relevant_sig}, #{result.compare_result}, #{result.ori_patent_title})" +
-                    "</foreach>" +
-                    "</script>"
+                "</foreach>" +
+            "</script>"
     })
     void insertNoveltyAnaItems(Integer noveltyResultId, List noveltyAnalysisResults);
 
-    @Select("SELECT signory_item FROM signory where patent_id = #{patentId}")
-    ArrayList<String> getSignorysById(Integer patentId);
+    @Insert({
+        "insert into stats_ana_result() VALUES();"
+    })
+    @Options(useGeneratedKeys=true, keyColumn="stats_res_id", keyProperty = "id")
+    void createNewStatsResult(InsertOut insertOut);
+
+    @Insert({
+        "<script>"  +
+            "insert IGNORE INTO stats_ana_item(stats_ana_id, option_json) VALUES" +
+            "<foreach collection='options' item='option' separator=','> " +
+                "(#{noveltyStatsResultId}, #{option})" +
+            "</foreach>" +
+        "</script>"
+    })
+    void insertStatsAnaItems(Integer noveltyStatsResultId, List<String> options);
+
+    @Select("SELECT option_json from stats_ana_item")
+    List<String> selectOptions();
+
+    @Select("SELECT signory_id, signory_item FROM signory where patent_id = #{patentId}")
+    ArrayList<Map<String, Object>> getSignorysById(Integer patentId);
 }

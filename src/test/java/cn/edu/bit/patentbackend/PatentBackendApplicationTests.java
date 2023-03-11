@@ -27,10 +27,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @SpringBootTest
 class PatentBackendApplicationTests {
@@ -140,7 +137,6 @@ class PatentBackendApplicationTests {
     }
     @Test
     void testSql(){
-        ArrayList<String> signorys = reportMapper.getSignorysById(1);
-        System.out.println("q1");
+
     }
 }

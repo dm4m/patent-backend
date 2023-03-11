@@ -74,8 +74,16 @@ public class ReportController {
     }
 
     @RequestMapping(path = "/signory", method = RequestMethod.GET)
-    public ArrayList<String> getSignorysById(@RequestParam("patentId")Integer patentId){
+    public ArrayList<Map<String, Object>> getSignorysById(@RequestParam("patentId")Integer patentId){
         return reportService.getSignorysById(patentId);
+    }
+
+    @RequestMapping(path = "/statsResults", method = RequestMethod.POST)
+    public void insertStatsResults(@RequestBody Map request){
+        List<String> options = (List) request.get("options");
+        Integer reportId = (Integer) request.get("reportId");
+        reportService.insertStatsResults(reportId, options);
+        return;
     }
 
 }

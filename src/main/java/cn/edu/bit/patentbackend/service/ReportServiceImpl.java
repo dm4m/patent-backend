@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReportServiceImpl implements ReportService{
@@ -67,7 +68,18 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public ArrayList<String> getSignorysById(Integer patentId) {
+    public ArrayList<Map<String, Object>> getSignorysById(Integer patentId) {
         return reportMapper.getSignorysById(patentId);
+    }
+
+    @Override
+    @Transactional
+    public void insertStatsResults(Integer reportId, List<String> options) {
+        InsertOut insertOut = new InsertOut();
+        reportMapper.createNewStatsResult(insertOut);
+        Integer noveltyStatsResultId = insertOut.getId();
+        reportMapper.insertStatsAnaItems(noveltyStatsResultId, options);
+        String itemType = ReportContentType.Stats;
+        reportMapper.insertRCItem(itemType, noveltyStatsResultId, itemType + noveltyStatsResultId.toString(), reportId);
     }
 }

@@ -5,6 +5,7 @@ import cn.edu.bit.patentbackend.bean.ReportContentIitemRsp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface ReportService {
     ArrayList<Report2gen> getReport2gen();
@@ -22,5 +23,7 @@ public interface ReportService {
 
     void insertNoveltyResults(List noveltyAnalysisResult, String focusSigory, Integer reportId);
 
-    ArrayList<String> getSignorysById(Integer patentId);
+    ArrayList<Map<String, Object>> getSignorysById(Integer patentId);
+
+    void insertStatsResults(Integer reportId, List<String> options);
 }
