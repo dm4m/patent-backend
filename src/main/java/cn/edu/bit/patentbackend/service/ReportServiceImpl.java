@@ -1,12 +1,14 @@
 package cn.edu.bit.patentbackend.service;
 import cn.edu.bit.patentbackend.bean.*;
 import cn.edu.bit.patentbackend.mapper.ReportMapper;
+import cn.edu.bit.patentbackend.mapper.PatentMapper;
 import cn.edu.bit.patentbackend.utils.ReportContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +17,9 @@ public class ReportServiceImpl implements ReportService{
 
     @Autowired
     ReportMapper reportMapper;
+
+    @Autowired
+    PatentMapper patentMapper;
 
     @Override
     public ArrayList<Report2gen> getReport2gen() {
@@ -81,5 +86,33 @@ public class ReportServiceImpl implements ReportService{
         reportMapper.insertStatsAnaItems(noveltyStatsResultId, options);
         String itemType = ReportContentType.Stats;
         reportMapper.insertRCItem(itemType, noveltyStatsResultId, itemType + noveltyStatsResultId.toString(), reportId);
+    }
+
+    @Override
+    public RCDetailRsp getReportContentDetail(String itemType, Integer corrId) {
+        RCDetailRsp rcDetailRsp = new RCDetailRsp();
+        if(itemType.equals("检索结果")){
+            List<Map<String, Object>> searchResultItems = reportMapper.getSearchResultItems(corrId);
+            List<Integer> searchResultsIds = new ArrayList<>();
+            for (Map<String, Object> searchResultItem : searchResultItems) {
+                searchResultsIds.add(((Long)searchResultItem.get("patent_id")).intValue());
+            }
+            List<Map<String, Object>> patents = patentMapper.selectPatentListByIds(searchResultsIds);
+            for (int i = 0; i < patents.size(); i++) {
+                patents.get(i).put("search_result_item_id", searchResultItems.get(i).get("search_result_item_id"));
+            }
+            rcDetailRsp.setSearchResults(patents);
+        }else if(itemType.equals("统计分析结果")){
+            List<Map<String, Object>> statsAnaItems = reportMapper.getStatsAnaItems(corrId);
+            rcDetailRsp.setStatsResults(statsAnaItems);
+        }else if(itemType.equals("新颖性比对结果")){
+            HashMap<String, Object> noveltyAnaResult = new HashMap<>();
+            String oriSig = reportMapper.getOriSignory(corrId);
+            List<Map<String, Object>> noveltyAnaItems = reportMapper.getNoveltyAnaItems(corrId);
+            noveltyAnaResult.put("ori_signory", oriSig);
+            noveltyAnaResult.put("anaItems", noveltyAnaItems);
+            rcDetailRsp.setNoveltyAnaResult(noveltyAnaResult);
+        }
+        return rcDetailRsp;
     }
 }

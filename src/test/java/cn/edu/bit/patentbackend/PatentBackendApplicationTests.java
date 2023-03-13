@@ -1,5 +1,4 @@
 package cn.edu.bit.patentbackend;
-import cn.edu.bit.patentbackend.bean.InsertOut;
 import cn.edu.bit.patentbackend.mapper.PatentMapper;
 import cn.edu.bit.patentbackend.mapper.ReportMapper;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
@@ -137,6 +136,7 @@ class PatentBackendApplicationTests {
     }
     @Test
     void testSql(){
-
+        List<Map<String, Object>> statsAnaItems = reportMapper.getStatsAnaItems(1);
+        System.out.println("111");
     }
 }

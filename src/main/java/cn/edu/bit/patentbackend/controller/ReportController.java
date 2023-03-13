@@ -1,6 +1,7 @@
 package cn.edu.bit.patentbackend.controller;
 
 import cn.edu.bit.patentbackend.bean.AnalysisCollectionItemRsp;
+import cn.edu.bit.patentbackend.bean.RCDetailRsp;
 import cn.edu.bit.patentbackend.bean.Report2gen;
 import cn.edu.bit.patentbackend.bean.ReportContentIitemRsp;
 import cn.edu.bit.patentbackend.service.ReportService;
@@ -84,6 +85,13 @@ public class ReportController {
         Integer reportId = (Integer) request.get("reportId");
         reportService.insertStatsResults(reportId, options);
         return;
+    }
+
+    @RequestMapping(path = "/RCDetail", method = RequestMethod.GET)
+    public RCDetailRsp getReportContentDetail(@RequestParam("itemType") String itemType,
+                                              @RequestParam("corrId") Integer corrId)
+    {
+        return reportService.getReportContentDetail(itemType, corrId);
     }
 
 }

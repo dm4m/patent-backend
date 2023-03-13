@@ -109,4 +109,15 @@ public interface ReportMapper {
 
     @Select("SELECT signory_id, signory_item FROM signory where patent_id = #{patentId}")
     ArrayList<Map<String, Object>> getSignorysById(Integer patentId);
+
+    @Select("SELECT search_result_item_id, patent_id FROM search_result_item where search_result_id = #{searchResultId}")
+    List<Map<String, Object>> getSearchResultItems(Integer searchResultId);
+
+    @Select("SELECT stats_ana_item_id, option_json FROM stats_ana_item where stats_ana_id = #{statsAnaId}")
+    List<Map<String, Object>> getStatsAnaItems(Integer statsAnaId);
+    @Select("SELECT ori_signory FROM novelty_ana_result where novelty_ana_id = #{noveltyAnaId}")
+    String getOriSignory(Integer noveltyAnaId);
+
+    @Select("SELECT novelty_ana_item_id, relevant_sig, ori_patent_title, compare_result FROM novelty_ana_item where novelty_ana_id = #{noveltyAnaId}")
+    List<Map<String, Object>> getNoveltyAnaItems(Integer noveltyAnaId);
 }

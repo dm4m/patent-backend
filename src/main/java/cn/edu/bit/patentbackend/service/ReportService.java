@@ -1,5 +1,6 @@
 package cn.edu.bit.patentbackend.service;
 
+import cn.edu.bit.patentbackend.bean.RCDetailRsp;
 import cn.edu.bit.patentbackend.bean.Report2gen;
 import cn.edu.bit.patentbackend.bean.ReportContentIitemRsp;
 
@@ -26,4 +27,6 @@ public interface ReportService {
     ArrayList<Map<String, Object>> getSignorysById(Integer patentId);
 
     void insertStatsResults(Integer reportId, List<String> options);
+
+    RCDetailRsp getReportContentDetail(String itemType, Integer corrId);
 }
