@@ -73,26 +73,34 @@ public interface ReportMapper {
     void insertRCItem(String itemType, Integer searchResultId, String name, Integer reportId);
 
     @Insert({
-            "insert into novelty_ana_result(ori_signory) VALUES(#{focusSigory});"
+            "insert into novelty_ana_result(ori_signory, name, word_pairs_sum, trigger_rules_sum, numeric_range_sum, hyponym_hypernym_sum, " +
+                    "direct_substitution_sum, destroy_sum, statistical_info_sum) VALUES(#{focusSigory}, #{resultName}, " +
+                    "#{word_pairs_sum}, #{trigger_rules_sum}, #{numeric_range_sum}, #{hyponym_hypernym_sum}, #{direct_substitution_sum}, #{destroy_sum}, #{statistical_info_sum});"
     })
     @Options(useGeneratedKeys=true, keyColumn="novelty_ana_id", keyProperty = "insertOut.id")
-    void createNewNoveltyResult(InsertOut insertOut, String focusSigory);
+    void createNewNoveltyResult(InsertOut insertOut, String focusSigory, String resultName,
+                                Integer word_pairs_sum, Integer trigger_rules_sum,
+                                Integer numeric_range_sum, Integer hyponym_hypernym_sum,
+                                Integer direct_substitution_sum, Integer destroy_sum, String statistical_info_sum);
 
     @Insert({
             "<script>"  +
-                "insert IGNORE INTO novelty_ana_item(novelty_ana_id, relevant_sig, compare_result, ori_patent_title) VALUES" +
-                "<foreach collection='noveltyAnalysisResults' item='result' separator=','> " +
-                    "(#{noveltyResultId}, #{result.relevant_sig}, #{result.compare_result}, #{result.ori_patent_title})" +
+                "insert IGNORE INTO novelty_ana_item(novelty_ana_id, relevant_sig, compare_result, ori_patent_title, " +
+                    "word_pairs, trigger_rules, numeric_range, hyponym_hypernym, direct_substitution, destroy, statistical_info) VALUES" +
+                "<foreach collection='noveltyAnalysisResults' item='result' separator=','>" +
+                    "(#{noveltyResultId}, #{result.relevant_sig}, #{result.compare_result}, #{result.ori_patent_title}, " +
+                    "#{result.statistical_dict.word_pairs}, #{result.statistical_dict.trigger_rules}, #{result.statistical_dict.numeric_range}, " +
+                    "#{result.statistical_dict.hyponym_hypernym}, #{result.statistical_dict.direct_substitution}, #{result.statistical_dict.destroy}, #{result.statistical_info})" +
                 "</foreach>" +
             "</script>"
     })
     void insertNoveltyAnaItems(Integer noveltyResultId, List noveltyAnalysisResults);
 
     @Insert({
-        "insert into stats_ana_result() VALUES();"
+        "insert into stats_ana_result(analysis_collection_id) VALUES(#{collectionId});"
     })
-    @Options(useGeneratedKeys=true, keyColumn="stats_res_id", keyProperty = "id")
-    void createNewStatsResult(InsertOut insertOut);
+    @Options(useGeneratedKeys=true, keyColumn="stats_res_id", keyProperty = "insertOut.id")
+    void createNewStatsResult(InsertOut insertOut, Integer collectionId);
 
     @Insert({
         "<script>"  +
@@ -120,4 +128,7 @@ public interface ReportMapper {
 
     @Select("SELECT novelty_ana_item_id, relevant_sig, ori_patent_title, compare_result FROM novelty_ana_item where novelty_ana_id = #{noveltyAnaId}")
     List<Map<String, Object>> getNoveltyAnaItems(Integer noveltyAnaId);
+
+    @Delete("delete from report_content_item where corr_id = #{corrId}")
+    void deleteReportContentItemByCorrId(Integer corrId);
 }

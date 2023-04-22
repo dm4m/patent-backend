@@ -1,6 +1,9 @@
 package cn.edu.bit.patentbackend;
+import cn.edu.bit.patentbackend.bean.stats.NoveltyAnaResult;
+import cn.edu.bit.patentbackend.bean.stats.NoveltyAnaResultItem;
 import cn.edu.bit.patentbackend.mapper.PatentMapper;
 import cn.edu.bit.patentbackend.mapper.ReportMapper;
+import cn.edu.bit.patentbackend.mapper.StatsAnaMapper;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -38,6 +41,9 @@ class PatentBackendApplicationTests {
 
     @Autowired
     ReportMapper reportMapper;
+
+    @Autowired
+    StatsAnaMapper statsAnaMapper;
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
@@ -136,7 +142,9 @@ class PatentBackendApplicationTests {
     }
     @Test
     void testSql(){
-        List<Map<String, Object>> statsAnaItems = reportMapper.getStatsAnaItems(1);
-        System.out.println("111");
+//        List<NoveltyAnaResult> noveltyAnaResults = statsAnaMapper.getNoveltyAnaResults();
+        Integer naItemsAccount = statsAnaMapper.getNAItemsAccount(25);
+        List<NoveltyAnaResultItem> noveltyAnaResultItems = statsAnaMapper.getNoveltyAnaResultItems(25, 1, 1);
+        System.out.println(noveltyAnaResultItems);
     }
 }

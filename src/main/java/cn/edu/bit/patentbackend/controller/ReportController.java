@@ -69,8 +69,9 @@ public class ReportController {
     public void insertNoveltyResults(@RequestBody Map request){
         List noveltyAnalysisResult = (List) request.get("noveltyAnalysisResult");
         String focusSigory = (String) request.get("focusSigory");
-        Integer reportId = (Integer) request.get("reportId");
-        reportService.insertNoveltyResults(noveltyAnalysisResult, focusSigory, reportId);
+        String resultName = (String) request.get("resultName");
+        if(noveltyAnalysisResult.isEmpty()){return;}
+        reportService.insertNoveltyResults(noveltyAnalysisResult, focusSigory, resultName);
         return;
     }
 
@@ -83,7 +84,8 @@ public class ReportController {
     public void insertStatsResults(@RequestBody Map request){
         List<String> options = (List) request.get("options");
         Integer reportId = (Integer) request.get("reportId");
-        reportService.insertStatsResults(reportId, options);
+        Integer collectionId = (Integer) request.get("collectionId");
+        reportService.insertStatsResults(reportId, options, collectionId);
         return;
     }
 
@@ -92,6 +94,26 @@ public class ReportController {
                                               @RequestParam("corrId") Integer corrId)
     {
         return reportService.getReportContentDetail(itemType, corrId);
+    }
+
+    @RequestMapping(path = "/addNoveltyResult2Report", method = RequestMethod.POST)
+    public void addNoveltyResult2Report(@RequestBody Map request)
+    {
+        Integer noveltyAnaId = (Integer) request.get("noveltyAnaId");
+        Integer reportId = (Integer) request.get("reportId");
+        String noveltyAnaName = (String) request.get("noveltyAnaName");
+        reportService.addNoveltyResult2Report(reportId, noveltyAnaId, noveltyAnaName);
+        return;
+    }
+
+    @RequestMapping(path = "/addSearchResults2Report", method = RequestMethod.POST)
+    public void addSearchResults2Report(@RequestBody Map request)
+    {
+        Integer collectionId = (Integer) request.get("collectionId");
+        Integer reportId = (Integer) request.get("reportId");
+        String collectionName = (String) request.get("collectionName");
+        reportService.addSearchResults2Report(reportId, collectionId, collectionName);
+        return;
     }
 
 }

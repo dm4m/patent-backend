@@ -60,7 +60,7 @@ public class ExpressionUtil {
     /*
     * 将高级检索前端传递来的条件，转换成 QueryBuilder
     * */
-    public static QueryBuilder condition2Query(ArrayList<AdvancedSearchCondition> conditions){
+    public static QueryBuilder  condition2Query(ArrayList<AdvancedSearchCondition> conditions){
         if(conditions.isEmpty()){
             return new BoolQueryBuilder();
         }

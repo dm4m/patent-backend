@@ -2,9 +2,10 @@ package cn.edu.bit.patentbackend.controller;
 
 import cn.edu.bit.patentbackend.bean.AnalysisCollection;
 import cn.edu.bit.patentbackend.bean.AnalysisCollectionItemRsp;
+import cn.edu.bit.patentbackend.bean.stats.NoveltyAnaResult;
+import cn.edu.bit.patentbackend.bean.stats.NoveltyAnaResultItemRsp;
 import cn.edu.bit.patentbackend.service.StatsAnaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -66,4 +67,30 @@ public class StatsAnaController {
         System.out.println(collectionId);
         return;
     }
+
+
+    @RequestMapping(path = "/noveltyAnaResult", method = RequestMethod.GET)
+    public ArrayList<NoveltyAnaResult> getNoveltyAnaResult(){
+        ArrayList<NoveltyAnaResult> res = statsAnaService.getNoveltyAnaResults();
+        return res;
+    }
+
+    @RequestMapping(path = "/noveltyAnaResultItem", method = RequestMethod.GET)
+    public NoveltyAnaResultItemRsp getNAItemByNAId(@RequestParam("noveltyAnaId") Integer noveltyAnaId,
+                                                   @RequestParam("pageIndex") Integer pageIndex,
+                                                   @RequestParam("pageSize") Integer pageSize)
+    {
+        System.out.println(noveltyAnaId + " " + pageIndex + " " + pageSize);
+        return statsAnaService.getNoveltyAnaResultItems(noveltyAnaId, pageIndex, pageSize);
+    }
+
+
+    @RequestMapping(path = "/NoveltyRes", method = RequestMethod.DELETE)
+    public void deleteNoveltyRes(@RequestParam("noveltyResId")Integer noveltyResId)
+    {
+
+        statsAnaService.deleteNoveltyRes(noveltyResId);
+        return;
+    }
+
 }

@@ -22,11 +22,15 @@ public interface ReportService {
 
     void insertSearchResults(List patentIds, Integer reportId);
 
-    void insertNoveltyResults(List noveltyAnalysisResult, String focusSigory, Integer reportId);
+    void insertNoveltyResults(List noveltyAnalysisResult, String focusSigory, String reportId);
 
     ArrayList<Map<String, Object>> getSignorysById(Integer patentId);
 
-    void insertStatsResults(Integer reportId, List<String> options);
+    void insertStatsResults(Integer reportId, List<String> options, Integer collectionId);
 
     RCDetailRsp getReportContentDetail(String itemType, Integer corrId);
+
+    void addNoveltyResult2Report(Integer reportId, Integer noveltyResId, String noveltyAnaName);
+
+    void addSearchResults2Report(Integer reportId, Integer collectionId, String collectionName);
 }
