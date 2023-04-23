@@ -33,4 +33,6 @@ public interface ReportService {
     void addNoveltyResult2Report(Integer reportId, Integer noveltyResId, String noveltyAnaName);
 
     void addSearchResults2Report(Integer reportId, Integer collectionId, String collectionName);
+
+    void saveAndAddNoveltyStats(Integer reportId, List<String> options, Integer noveltyResId);
 }

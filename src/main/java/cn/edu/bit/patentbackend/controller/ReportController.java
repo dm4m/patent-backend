@@ -116,4 +116,12 @@ public class ReportController {
         return;
     }
 
+    @RequestMapping(path = "/noveltyStatus", method = RequestMethod.POST)
+    public void saveAndAddNoveltyStats(@RequestBody Map request){
+        List<String> options = (List) request.get("options");
+        Integer reportId = (Integer) request.get("reportId");
+        Integer noveltyResId = (Integer) request.get("noveltyResId");
+        reportService.saveAndAddNoveltyStats(reportId, options, noveltyResId);
+        return;
+    }
 }

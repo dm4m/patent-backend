@@ -86,11 +86,12 @@ public interface ReportMapper {
     @Insert({
             "<script>"  +
                 "insert IGNORE INTO novelty_ana_item(novelty_ana_id, relevant_sig, compare_result, ori_patent_title, " +
-                    "word_pairs, trigger_rules, numeric_range, hyponym_hypernym, direct_substitution, destroy, statistical_info) VALUES" +
+                    "word_pairs, trigger_rules, numeric_range, hyponym_hypernym, direct_substitution, destroy, statistical_info, index_num) VALUES" +
                 "<foreach collection='noveltyAnalysisResults' item='result' separator=','>" +
                     "(#{noveltyResultId}, #{result.relevant_sig}, #{result.compare_result}, #{result.ori_patent_title}, " +
                     "#{result.statistical_dict.word_pairs}, #{result.statistical_dict.trigger_rules}, #{result.statistical_dict.numeric_range}, " +
-                    "#{result.statistical_dict.hyponym_hypernym}, #{result.statistical_dict.direct_substitution}, #{result.statistical_dict.destroy}, #{result.statistical_info})" +
+                    "#{result.statistical_dict.hyponym_hypernym}, #{result.statistical_dict.direct_substitution}, #{result.statistical_dict.destroy}, " +
+                    "#{result.statistical_info}, #{result.index_num})" +
                 "</foreach>" +
             "</script>"
     })
@@ -106,11 +107,11 @@ public interface ReportMapper {
         "<script>"  +
             "insert IGNORE INTO stats_ana_item(stats_ana_id, option_json) VALUES" +
             "<foreach collection='options' item='option' separator=','> " +
-                "(#{noveltyStatsResultId}, #{option})" +
+                "(#{statsResultId}, #{option})" +
             "</foreach>" +
         "</script>"
     })
-    void insertStatsAnaItems(Integer noveltyStatsResultId, List<String> options);
+    void insertStatsAnaItems(Integer statsResultId, List<String> options);
 
     @Select("SELECT option_json from stats_ana_item")
     List<String> selectOptions();
@@ -131,4 +132,23 @@ public interface ReportMapper {
 
     @Delete("delete from report_content_item where corr_id = #{corrId}")
     void deleteReportContentItemByCorrId(Integer corrId);
+
+    @Insert({
+            "insert into novelty_stats_result(novelty_ana_result_id) VALUES(#{noveltyResId});"
+    })
+    @Options(useGeneratedKeys=true, keyColumn="id", keyProperty = "insertOut.id")
+    void createNewNoveltyStatsResult(InsertOut insertOut, Integer noveltyResId);
+
+    @Insert({
+            "<script>"  +
+                    "insert IGNORE INTO novelty_stats_item(novelty_stats_id, option_json) VALUES" +
+                    "<foreach collection='options' item='option' separator=','> " +
+                    "(#{noveltyStatsResultId}, #{option})" +
+                    "</foreach>" +
+                    "</script>"
+    })
+    void insertNoveltyStatsAnaItems(Integer noveltyStatsResultId, List<String> options);
+
+    @Select("SELECT novelty_stats_item_id, option_json FROM novelty_stats_item where novelty_stats_id = #{corrId}")
+    List<Map<String, Object>> getNoveltyStatsAnaItems(Integer corrId);
 }
