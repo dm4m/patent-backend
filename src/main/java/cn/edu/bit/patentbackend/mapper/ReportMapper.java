@@ -86,12 +86,12 @@ public interface ReportMapper {
     @Insert({
             "<script>"  +
                 "insert IGNORE INTO novelty_ana_item(novelty_ana_id, relevant_sig, compare_result, ori_patent_title, " +
-                    "word_pairs, trigger_rules, numeric_range, hyponym_hypernym, direct_substitution, destroy, statistical_info, index_num) VALUES" +
+                    "word_pairs, trigger_rules, numeric_range, hyponym_hypernym, direct_substitution, destroy, statistical_info, index_num, score, patent_code) VALUES" +
                 "<foreach collection='noveltyAnalysisResults' item='result' separator=','>" +
                     "(#{noveltyResultId}, #{result.relevant_sig}, #{result.compare_result}, #{result.ori_patent_title}, " +
                     "#{result.statistical_dict.word_pairs}, #{result.statistical_dict.trigger_rules}, #{result.statistical_dict.numeric_range}, " +
                     "#{result.statistical_dict.hyponym_hypernym}, #{result.statistical_dict.direct_substitution}, #{result.statistical_dict.destroy}, " +
-                    "#{result.statistical_info}, #{result.index_num})" +
+                    "#{result.statistical_info}, #{result.index_num}, #{result.score}, #{result.patent_code})" +
                 "</foreach>" +
             "</script>"
     })
@@ -127,7 +127,7 @@ public interface ReportMapper {
     @Select("SELECT ori_signory FROM novelty_ana_result where novelty_ana_id = #{noveltyAnaId}")
     String getOriSignory(Integer noveltyAnaId);
 
-    @Select("SELECT novelty_ana_item_id, relevant_sig, ori_patent_title, compare_result FROM novelty_ana_item where novelty_ana_id = #{noveltyAnaId}")
+    @Select("SELECT novelty_ana_item_id, relevant_sig, ori_patent_title, compare_result, score, index_num FROM novelty_ana_item where novelty_ana_id = #{noveltyAnaId}")
     List<Map<String, Object>> getNoveltyAnaItems(Integer noveltyAnaId);
 
     @Delete("delete from report_content_item where corr_id = #{corrId}")

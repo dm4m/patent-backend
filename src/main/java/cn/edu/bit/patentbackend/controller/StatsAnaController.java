@@ -30,7 +30,6 @@ public class StatsAnaController {
                                                                 @RequestParam("pageIndex") Integer pageIndex,
                                                                 @RequestParam("pageSize") Integer pageSize)
     {
-        System.out.println(collectionId + " " + pageIndex + " " + pageSize);
         return statsAnaService.getAnalysisCollectionItems(collectionId, pageIndex, pageSize);
     }
 
@@ -42,11 +41,11 @@ public class StatsAnaController {
     }
 
     @RequestMapping(path = "/analysisCollection", method = RequestMethod.POST)
-    public void insertAnalysisCollection(@RequestBody Map request)
+    public Integer insertAnalysisCollection(@RequestBody Map request)
     {
         String collectionName = (String) request.get("collectionName");
-        statsAnaService.insertAnalysisCollection(collectionName);
-        return;
+        Integer collection_id = statsAnaService.insertAnalysisCollection(collectionName);
+        return collection_id;
     }
 
     @RequestMapping(path = "/analysisCollectionItem", method = RequestMethod.DELETE)
@@ -80,7 +79,6 @@ public class StatsAnaController {
                                                    @RequestParam("pageIndex") Integer pageIndex,
                                                    @RequestParam("pageSize") Integer pageSize)
     {
-        System.out.println(noveltyAnaId + " " + pageIndex + " " + pageSize);
         return statsAnaService.getNoveltyAnaResultItems(noveltyAnaId, pageIndex, pageSize);
     }
 

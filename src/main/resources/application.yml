@@ -22,3 +22,8 @@ elasticsearch:
 
 flask:
   url: http://10.108.119.71:5000
+
+logging:
+  level:
+    org.mybatis: DEBUG
+    org.mybatis.type: TRACE

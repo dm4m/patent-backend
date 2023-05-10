@@ -3,6 +3,7 @@ package cn.edu.bit.patentbackend.service;
 import cn.edu.bit.patentbackend.bean.AnalysisCollection;
 import cn.edu.bit.patentbackend.bean.AnalysisCollectionItem;
 import cn.edu.bit.patentbackend.bean.AnalysisCollectionItemRsp;
+import cn.edu.bit.patentbackend.bean.InsertOut;
 import cn.edu.bit.patentbackend.bean.stats.NoveltyAnaResult;
 import cn.edu.bit.patentbackend.bean.stats.NoveltyAnaResultItem;
 import cn.edu.bit.patentbackend.bean.stats.NoveltyAnaResultItemRsp;
@@ -52,8 +53,10 @@ public class StatsAnaServiceImpl implements StatsAnaService{
     }
 
     @Override
-    public void insertAnalysisCollection(String collectionName) {
-        statsAnaMapper.insertAnalysisCollection(collectionName);
+    public Integer insertAnalysisCollection(String collectionName) {
+        InsertOut insertOut = new InsertOut();
+        statsAnaMapper.insertAnalysisCollection(collectionName, insertOut);
+        return insertOut.getId();
     }
 
     @Override

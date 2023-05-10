@@ -2,6 +2,7 @@ package cn.edu.bit.patentbackend.mapper;
 
 import cn.edu.bit.patentbackend.bean.AnalysisCollection;
 import cn.edu.bit.patentbackend.bean.AnalysisCollectionItem;
+import cn.edu.bit.patentbackend.bean.InsertOut;
 import cn.edu.bit.patentbackend.bean.stats.NoveltyAnaResult;
 import cn.edu.bit.patentbackend.bean.stats.NoveltyAnaResultItem;
 import org.apache.ibatis.annotations.*;
@@ -16,7 +17,7 @@ public interface StatsAnaMapper {
     @Select("SELECT collection_id, name FROM analysis_collection")
     List<AnalysisCollection> getAllAnalysisCollection();
 
-    @Select("SELECT item_id as itemId, title as patentName, inventor_list as inventor from analysis_collection_item, patent " +
+    @Select("SELECT item_id as itemId, title as patentName, inventor_list as inventor, patent_id as patentId from analysis_collection_item, patent " +
             "where collection_id = #{collectionId} and patent_id = patent.id " +
             "limit #{limit} offset #{offset}")
     List<AnalysisCollectionItem> getAnalysisCollectionItems(Integer collectionId, Integer limit, Integer offset);
@@ -53,7 +54,8 @@ public interface StatsAnaMapper {
     @Insert({
             "insert INTO analysis_collection(name) VALUES (#{collectionName})"
     })
-    void insertAnalysisCollection(String collectionName);
+    @Options(useGeneratedKeys=true, keyColumn="collection_id", keyProperty = "insertOut.id")
+    void insertAnalysisCollection(String collectionName, InsertOut insertOut);
 
     @Results(
             value = {
@@ -70,13 +72,16 @@ public interface StatsAnaMapper {
                     @Result(property = "novelty_ana_id", column = "novelty_ana_id"),
                     @Result(property = "relevant_sig", column = "relevant_sig"),
                     @Result(property = "compare_result", column = "compare_result"),
-                    @Result(property = "ori_patent_title", column = "ori_patent_title")
+                    @Result(property = "ori_patent_title", column = "ori_patent_title"),
+                    @Result(property = "index_num", column = "index_num")
             })
     @Select("SELECT novelty_ana_item_id as novelty_ana_item_id, " +
             "novelty_ana_id as novelty_ana_id, " +
             "relevant_sig as relevant_sig,  " +
             "compare_result as compare_result, " +
-            "ori_patent_title as ori_patent_title " +
+            "ori_patent_title as ori_patent_title, " +
+            "score as score, " +
+            "index_num as index_num " +
             "from novelty_ana_item " +
             "where novelty_ana_id = #{noveltyAnaId} " +
             "limit #{limit} offset #{offset}")

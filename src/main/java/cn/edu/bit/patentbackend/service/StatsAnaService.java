@@ -19,7 +19,7 @@ public interface StatsAnaService {
 
     void insertAnalysisCollectionItems(List patentIds, Integer collectionId);
 
-    void insertAnalysisCollection(String collectionName);
+    Integer insertAnalysisCollection(String collectionName);
 
     ArrayList<NoveltyAnaResult> getNoveltyAnaResults();
 

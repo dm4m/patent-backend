@@ -9,5 +9,6 @@ public class NoveltyAnaResultItem {
     String relevant_sig;
     String compare_result;
     String ori_patent_title;
-
+    String score;
+    Integer index_num;
 }

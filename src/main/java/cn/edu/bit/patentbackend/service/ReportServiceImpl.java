@@ -80,6 +80,10 @@ public class ReportServiceImpl implements ReportService{
             hyponym_hypernym_sum += (Integer) statistical_dict.get("hyponym_hypernym");
             direct_substitution_sum += (Integer) statistical_dict.get("direct_substitution");
             destroy_sum += (Integer) statistical_dict.get("destroy");
+//            String score = (String) resMap.get("score");
+//            score = score.replace("%", "\\%");
+//            resMap.put("score", score);
+            System.out.println();
         }
         for (int i = 0; i < noveltyAnalysisResult.size(); i++) {
             HashMap map = (HashMap) noveltyAnalysisResult.get(i);
