@@ -108,7 +108,8 @@ public class SearchServiceImpl implements SearchService {
         ObjectMapper mapper = new ObjectMapper();
 //      List<Integer> list = mapper.readValue(httpResponse, ArrayList.class);
         HashMap flaskRes = mapper.readValue(httpResponse, HashMap.class);
-        List<Integer> patentIdList = (List<Integer>) flaskRes.get("res_list");
+        List<List> resList = (List<List>) flaskRes.get("res_list");
+        List<Integer> patentIdList = resList.get(0);
         List<String> signoryList = (List<String>) flaskRes.get("signory_list");
         List<Map<String, Object>> patentList = patentRepository.getPatentById(patentIdList);
         ArrayList<Map<String, Object>> results = new ArrayList<>();
