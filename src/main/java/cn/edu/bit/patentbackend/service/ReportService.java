@@ -35,4 +35,6 @@ public interface ReportService {
     void addSearchResults2Report(Integer reportId, Integer collectionId, String collectionName);
 
     void saveAndAddNoveltyStats(Integer reportId, List<String> options, Integer noveltyResId);
+
+    void insertPatentInfo(Integer reportId, List<String> signorys);
 }

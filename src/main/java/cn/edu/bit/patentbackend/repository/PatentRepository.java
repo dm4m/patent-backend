@@ -83,6 +83,7 @@ public class PatentRepository {
         return response;
     }
 
+
 //    public SearchHits advancedSearch(SearchRequest request) {
 //    }
 }

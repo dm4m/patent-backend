@@ -124,4 +124,13 @@ public class ReportController {
         reportService.saveAndAddNoveltyStats(reportId, options, noveltyResId);
         return;
     }
+
+    @RequestMapping(path = "/addPatentInfo2Report", method = RequestMethod.POST)
+    public void addPatentInfo2Report(@RequestBody Map request){
+        List<String> signorys = (List) request.get("signorys");
+        Integer reportId = (Integer) request.get("reportId");
+        reportService.insertPatentInfo(reportId, signorys);
+        return;
+    }
+
 }

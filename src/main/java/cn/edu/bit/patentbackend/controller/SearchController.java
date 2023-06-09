@@ -58,10 +58,10 @@ public class SearchController {
     }
 
     @RequestMapping(path = "/uploadSearch", method = RequestMethod.POST)
-    public SearchResponse uploadSearch(@RequestParam("file")MultipartFile file) {
+    public SearchResponse uploadSearch(@RequestParam("file")MultipartFile file, @RequestParam("limit")Integer limit) {
         SearchResponse response = null;
         try {
-            response = searchService.uploadSearch(file);
+            response = searchService.uploadSearch(file, limit);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

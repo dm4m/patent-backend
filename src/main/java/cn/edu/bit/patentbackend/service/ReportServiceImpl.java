@@ -180,4 +180,14 @@ public class ReportServiceImpl implements ReportService{
         String itemType = ReportContentType.NoveltyStats;
         reportMapper.insertRCItem(itemType, noveltyStatsResultId, itemType + noveltyStatsResultId.toString(), reportId);
     }
+
+    @Override
+    public void insertPatentInfo(Integer reportId, List<String> signorys) {
+        InsertOut insertOut = new InsertOut();
+        reportMapper.createNewPatentInfo(insertOut);
+        Integer patentInfoId = insertOut.getId();
+        reportMapper.insertPatentSigs(patentInfoId, signorys);
+        String itemType = ReportContentType.PatentInfo;
+        reportMapper.insertRCItem(itemType, patentInfoId, itemType + patentInfoId.toString(), reportId);
+    }
 }

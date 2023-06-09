@@ -17,7 +17,7 @@ public interface SearchService {
 
     SearchResponse advancedSearch(LinkedHashMap conditions, int curPage, int perPage);
 
-    SearchResponse uploadSearch(MultipartFile file) throws JsonProcessingException;
+    SearchResponse uploadSearch(MultipartFile file, Integer limit) throws JsonProcessingException;
 
 
 }

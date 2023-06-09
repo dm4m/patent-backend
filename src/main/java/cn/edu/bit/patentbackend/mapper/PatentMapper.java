@@ -1,10 +1,9 @@
 package cn.edu.bit.patentbackend.mapper;
-import cn.edu.bit.patentbackend.bean.AnalysisCollection;
-import cn.edu.bit.patentbackend.bean.AnalysisCollectionItem;
 import cn.edu.bit.patentbackend.bean.Patent;
 import cn.edu.bit.patentbackend.bean.PatentWithBLOBs;
 import org.apache.ibatis.annotations.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

@@ -116,7 +116,7 @@ public interface ReportMapper {
     @Select("SELECT option_json from stats_ana_item")
     List<String> selectOptions();
 
-    @Select("SELECT signory_id, signory_item FROM signory where patent_id = #{patentId}")
+    @Select("SELECT signory_id, signory_seg as signory_item FROM signory_seg where patent_id = #{patentId}")
     ArrayList<Map<String, Object>> getSignorysById(Integer patentId);
 
     @Select("SELECT search_result_item_id, patent_id FROM search_result_item where search_result_id = #{searchResultId}")
@@ -151,4 +151,20 @@ public interface ReportMapper {
 
     @Select("SELECT novelty_stats_item_id, option_json FROM novelty_stats_item where novelty_stats_id = #{corrId}")
     List<Map<String, Object>> getNoveltyStatsAnaItems(Integer corrId);
+
+    @Insert({
+            "insert into report_patent() VALUES()"
+    })
+    @Options(useGeneratedKeys=true, keyColumn="id", keyProperty = "id")
+    void createNewPatentInfo(InsertOut insertOut);
+
+    @Insert({
+            "<script>"  +
+                    "insert IGNORE INTO report_signory(report_patent_id, signory_text) VALUES" +
+                    "<foreach collection='signorys' item='signory' separator=','> " +
+                        "(#{patentInfoId}, #{signory})" +
+                        "</foreach>" +
+                    "</script>"
+    })
+    void insertPatentSigs(Integer patentInfoId, List<String> signorys);
 }

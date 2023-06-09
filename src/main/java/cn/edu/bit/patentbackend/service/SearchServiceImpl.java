@@ -2,6 +2,7 @@ package cn.edu.bit.patentbackend.service;
 
 import cn.edu.bit.patentbackend.bean.*;
 import cn.edu.bit.patentbackend.mapper.PatentMapper;
+import cn.edu.bit.patentbackend.mapper.ReportMapper;
 import cn.edu.bit.patentbackend.repository.PatentRepository;
 import cn.edu.bit.patentbackend.utils.ExpressionUtil;
 import cn.edu.bit.patentbackend.utils.PatentFieldMapper;
@@ -31,7 +32,8 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     PatentMapper patentMapper;
 
-
+    @Autowired
+    ReportMapper reportMapper;
 
     @Value("${flask.url}")
     String flaskUrl;
@@ -93,10 +95,11 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public SearchResponse uploadSearch(MultipartFile file) throws JsonProcessingException {
+    public SearchResponse uploadSearch(MultipartFile file, Integer limit) throws JsonProcessingException {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("file", file.getResource());
+        builder.part("limit", limit);
         WebClient webClient = WebClient.create(flaskUrl);
         Mono<String> mono = webClient.post()
                 .uri("/uploadSearch")
@@ -112,6 +115,12 @@ public class SearchServiceImpl implements SearchService {
         List<Integer> patentIdList = resList.get(0);
         List<String> signoryList = (List<String>) flaskRes.get("signory_list");
         List<Map<String, Object>> patentList = patentRepository.getPatentById(patentIdList);
+//      每个专利的权利要求列表
+//        ArrayList<List<Map<String, Object>>> resSigorysList = new ArrayList<>();
+//        for (Integer patentId : patentIdList) {
+//            List<Map<String, Object>> signorys = reportMapper.getSignorysById(patentId);
+//            resSigorysList.add(signorys);
+//        }
         ArrayList<Map<String, Object>> results = new ArrayList<>();
         int i = 0;
         for (Map patent : patentList) {
