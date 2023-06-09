@@ -119,8 +119,9 @@ public interface ReportMapper {
     @Select("SELECT signory_id, signory_seg as signory_item FROM signory_seg where patent_id = #{patentId}")
     ArrayList<Map<String, Object>> getSignorysById(Integer patentId);
 
-    @Select("SELECT search_result_item_id, patent_id FROM search_result_item where search_result_id = #{searchResultId}")
-    List<Map<String, Object>> getSearchResultItems(Integer searchResultId);
+//    用于报告生成页面查询检索集合，原 search_result 表已废弃，现在使用 analysis_collection
+    @Select("SELECT item_id, patent_id FROM analysis_collection_item where collection_id = #{searchResultId}")
+    List<Map<String, Object>> getSearchResultItems(Integer collectionId);
 
     @Select("SELECT stats_ana_item_id, option_json FROM stats_ana_item where stats_ana_id = #{statsAnaId}")
     List<Map<String, Object>> getStatsAnaItems(Integer statsAnaId);
@@ -167,4 +168,7 @@ public interface ReportMapper {
                     "</script>"
     })
     void insertPatentSigs(Integer patentInfoId, List<String> signorys);
+
+    @Select("SELECT signory_text FROM report_signory where report_patent_id = #{corrId}")
+    List<String> getReportSignorys(Integer corrId);
 }

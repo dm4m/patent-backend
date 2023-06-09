@@ -128,7 +128,10 @@ public class ReportServiceImpl implements ReportService{
             List<Map<String, Object>> searchResultItems = reportMapper.getSearchResultItems(corrId);
             List<Integer> searchResultsIds = new ArrayList<>();
             for (Map<String, Object> searchResultItem : searchResultItems) {
-                searchResultsIds.add(((Long)searchResultItem.get("patent_id")).intValue());
+                searchResultsIds.add((Integer) searchResultItem.get("patent_id"));
+            }
+            if(searchResultsIds.isEmpty()){
+                return null;
             }
             List<Map<String, Object>> patents = patentMapper.selectPatentListByIds(searchResultsIds);
             for (int i = 0; i < patents.size(); i++) {
@@ -148,6 +151,9 @@ public class ReportServiceImpl implements ReportService{
         }else if(itemType.equals("新颖性统计结果")){
             List<Map<String, Object>> noveltyStatsAnaItems = reportMapper.getNoveltyStatsAnaItems(corrId);
             rcDetailRsp.setNoveltyStatsResults(noveltyStatsAnaItems);
+        }else if(itemType.equals("专利信息")){
+            List<String> reportSignorys = reportMapper.getReportSignorys(corrId);
+            rcDetailRsp.setReportSignorys(reportSignorys);
         }
         return rcDetailRsp;
     }
