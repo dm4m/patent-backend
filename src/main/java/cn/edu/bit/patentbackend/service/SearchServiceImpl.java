@@ -61,7 +61,8 @@ public class SearchServiceImpl implements SearchService {
                 .bodyToMono(String.class);
         String httpResponse = mono.block();
         ObjectMapper mapper = new ObjectMapper();
-        List<Integer> list = mapper.readValue(httpResponse, ArrayList.class);
+        List<List> httpRes = mapper.readValue(httpResponse, ArrayList.class);
+        List<Integer> list  = httpRes.get(0);
         List<Map<String, Object>> patentList = patentRepository.getPatentById(list);
         int i = 0;
         for (Map patent : patentList) {
